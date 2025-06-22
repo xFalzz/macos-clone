@@ -170,7 +170,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ⭐ **Star this repository if you find it helpful!**
-
-## 👨‍💻 About the Developer
-
-**xFalzz (Nawfal)** - Frontend Web Developer passionate about creating beautiful and interactive web experiences. Check out more projects at [https://github.com/xFalzz](https://github.com/xFalzz).
