@@ -1,4 +1,4 @@
-# macOS Web - Preact Edition
+# macOS Web - Preact Edition 
 
 A beautiful, interactive macOS desktop experience built with modern web technologies. This project recreates the macOS interface using Preact, TypeScript, and SCSS.
 
