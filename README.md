@@ -56,8 +56,8 @@ A beautiful, interactive macOS desktop experience built with modern web technolo
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/macos-preact.git
-cd macos-preact
+git clone https://github.com/xFalzz/macos-clone.git
+cd macos-clone
 
 # Install dependencies
 npm install
@@ -157,17 +157,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by the original [macOS Web](https://github.com/puruvj/macos-web) project
+- Inspired by the original [macOS Web](https://github.com/puruvj/macos-web) project by PuruVJ
 - Icons and assets from Apple's design system
 - Community contributors and feedback
 
 ## 🔗 Links
 
-- **Live Demo**: [macos-preact.vercel.app](https://macos-preact.vercel.app)
-- **Original Project**: [macOS Web](https://github.com/puruvj/macos-web)
-- **Issues**: [GitHub Issues](https://github.com/your-username/macos-preact/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/macos-preact/discussions)
+- **Live Demo**: [macos-cloning.vercel.app](https://macos-cloning.vercel.app)
+- **Repository**: [xFalzz/macos-clone](https://github.com/xFalzz/macos-clone)
+- **Developer**: [xFalzz (Nawfal)](https://github.com/xFalzz)
+- **Issues**: [GitHub Issues](https://github.com/xFalzz/macos-clone/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/xFalzz/macos-clone/discussions)
 
 ---
 
 ⭐ **Star this repository if you find it helpful!**
+
+## 👨‍💻 About the Developer
+
+**xFalzz (Nawfal)** - Frontend Web Developer passionate about creating beautiful and interactive web experiences. Check out more projects at [https://github.com/xFalzz](https://github.com/xFalzz).
