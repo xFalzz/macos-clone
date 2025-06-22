@@ -155,7 +155,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by the original [macOS Web](https://github.com/puruvj/macos-web) project by PuruVJ
+- Inspired by the original [macOS Web](https://github.com/puruvj/macos-preact) project by PuruVJ
 - Icons and assets from Apple's design system
 - Community contributors and feedback
 
