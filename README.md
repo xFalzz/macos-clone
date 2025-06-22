@@ -2,8 +2,6 @@
 
 A beautiful, interactive macOS desktop experience built with modern web technologies. This project recreates the macOS interface using Preact, TypeScript, and SCSS.
 
-![macOS Web Preview](public/assets/cover-image.png)
-
 ## ✨ Features
 
 ### 🖥️ Desktop Experience
