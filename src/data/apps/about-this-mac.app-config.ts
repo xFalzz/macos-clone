@@ -5,6 +5,7 @@ export const aboutThisMacAppConfig = createAppConfig({
   resizable: false,
   height: 400,
   width: 550,
+  showInDock: false,
   trafficLightsStyle: {
     top: '0.9rem',
     left: '0.9rem',

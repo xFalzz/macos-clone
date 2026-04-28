@@ -15,6 +15,12 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
     e.preventDefault();
     let targetUrl = inputUrl.trim();
 
+    if (targetUrl === 'webcam://') {
+      setUrl(targetUrl);
+      setIsLoading(false);
+      return;
+    }
+
     if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
       targetUrl = 'https://' + targetUrl;
     }
@@ -64,6 +70,9 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
           </div>
         </form>
 
+        <button class={css.navBtn} onClick={() => { setInputUrl('webcam://'); navigateTo(new Event('submit')); }} title="Test WebCam">
+          📷
+        </button>
         <button class={css.navBtn} onClick={reload} title="Reload">
           ↻
         </button>
@@ -71,7 +80,9 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
 
       {/* Browser content */}
       <div class={css.content}>
-        {url && (
+        {url === 'webcam://' ? (
+          <WebCamView />
+        ) : url ? (
           <iframe
             class={clsx(css.iframe, isBeingDragged && css.iframeDragged)}
             src={url}
@@ -79,9 +90,28 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
             sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
             allow="camera; microphone; display-capture; fullscreen; autoplay"
           />
-        )}
+        ) : null}
       </div>
     </section>
+  );
+};
+
+const WebCamView = () => {
+  return (
+    <div class={css.webcamContainer}>
+      <video
+        ref={(el) => {
+          if (el && !el.srcObject) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+              .then((stream) => { el.srcObject = stream; })
+              .catch((err) => { console.error("WebCam access denied or not available.", err); });
+          }
+        }}
+        autoPlay
+        playsInline
+        class={css.webcamVideo}
+      />
+    </div>
   );
 };
 

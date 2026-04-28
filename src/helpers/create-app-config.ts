@@ -14,6 +14,9 @@ export type AppConfig = {
   /** Break before this app */
   dockBreaksBefore?: boolean;
 
+  /** Whether the app should be shown in the dock */
+  showInDock?: boolean;
+
   trafficLightsStyle?: React.CSSProperties;
 };
 

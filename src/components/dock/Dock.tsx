@@ -20,14 +20,13 @@ export const Dock = () => {
         onMouseLeave={() => mouseX.set(null)}
       >
         <RovingTabIndexProvider options={{ direction: 'horizontal' }}>
-          {Object.keys(appsConfig).map((appID, i) => (
-            <div>
+          {Object.keys(appsConfig).filter(appID => appsConfig[appID].showInDock !== false).map((appID, i) => (
+            <div key={appID}>
               {appsConfig[appID].dockBreaksBefore && (
                 <div class={css.divider} key={`${appID}-divider`} aria-hidden="true" />
               )}
               <DockItem
                 index={i}
-                key={appID}
                 mouseX={mouseX}
                 appID={appID}
                 isOpen={openApps[appID]}

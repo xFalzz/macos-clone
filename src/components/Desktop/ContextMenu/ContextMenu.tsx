@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai';
 import { ComponentChildren, RefObject } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
 import { RovingTabIndexProvider, useFocusEffect, useRovingTabIndex } from 'react-roving-tabindex';
@@ -11,16 +12,64 @@ type Props = {
 
 export const ContextMenu = ({ outerRef }: Props) => {
   const { xPos, yPos, isMenuVisible, setIsMenuVisible } = useContextMenu(outerRef);
-
   const containerRef = useRef<HTMLDivElement>();
-
   const defMenu = contextMenuConfig.default;
+
+  const [, setFileSystem] = useAtom(import('__/data/file-system').then(m => m.fileSystemStore).catch(() => null as any) as any);
+  const [, setOpenApps] = useAtom(import('__/stores/apps.store').then(m => m.openAppsStore).catch(() => null as any) as any);
+  const [, setActiveApp] = useAtom(import('__/stores/apps.store').then(m => m.activeAppStore).catch(() => null as any) as any);
 
   useEffect(() => {
     isMenuVisible && containerRef.current.focus();
   }, [isMenuVisible]);
 
   useFocusOutside(containerRef, () => isMenuVisible && setIsMenuVisible(false));
+
+  const handleAction = (key: string) => {
+    setIsMenuVisible(false);
+    
+    switch (key) {
+      case 'new-folder':
+        import('__/data/file-system').then(m => {
+          setFileSystem((prev: any) => {
+            const newFs = JSON.parse(JSON.stringify(prev));
+            const desktop = newFs.find((i: any) => i.name === 'Desktop');
+            if (desktop) {
+              const baseName = 'untitled folder';
+              let name = baseName;
+              let counter = 1;
+              while (desktop.children?.find((i: any) => i.name === name)) {
+                counter++;
+                name = `${baseName} ${counter}`;
+              }
+              desktop.children = desktop.children || [];
+              desktop.children.push({
+                name,
+                type: 'folder',
+                modified: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+              });
+            }
+            return newFs;
+          });
+        });
+        break;
+      case 'change-desktop-bg':
+        import('__/stores/apps.store').then(m => {
+          setOpenApps((apps: any) => {
+            const newApps = { ...apps };
+            newApps['system-preferences'] = true;
+            return newApps;
+          });
+          setActiveApp('system-preferences');
+        });
+        break;
+      case 'get-info':
+        alert('macOS Web Clone\nVersion 1.0\nCreated with React & Vite');
+        break;
+      default:
+        console.log('Action not implemented yet:', key);
+    }
+  };
 
   return isMenuVisible ? (
     <div
@@ -32,7 +81,7 @@ export const ContextMenu = ({ outerRef }: Props) => {
       <RovingTabIndexProvider options={{ direction: 'vertical', loopAround: true }}>
         {Object.keys(defMenu).map((key) => (
           <>
-            <ContextMenuButton>{defMenu[key].title}</ContextMenuButton>
+            <ContextMenuButton onClick={() => handleAction(key)}>{defMenu[key].title}</ContextMenuButton>
             {(defMenu[key] as any).breakAfter && <div class={css.divider}></div>}
           </>
         ))}
@@ -45,19 +94,25 @@ export const ContextMenu = ({ outerRef }: Props) => {
 
 type ContextMenuButtonProps = {
   children: ComponentChildren;
+  onClick?: () => void;
 };
 
-const ContextMenuButton = ({ children }: ContextMenuButtonProps) => {
+const ContextMenuButton = ({ children, onClick }: ContextMenuButtonProps) => {
   const ref = useRef<HTMLButtonElement>();
 
   const [tabIndex, focused, handleKeyDown, handleClick] = useRovingTabIndex(ref, false);
 
   useFocusEffect(focused, ref);
 
+  const _onClick = () => {
+    handleClick();
+    onClick?.();
+  };
+
   return (
     <button
       onKeyDown={handleKeyDown}
-      onClick={handleClick}
+      onClick={_onClick}
       tabIndex={tabIndex}
       ref={ref}
       class={css.menuItem}
