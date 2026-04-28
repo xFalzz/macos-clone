@@ -1,3 +1,5 @@
+import { atom } from 'jotai';
+
 export type FileSystemItem = {
   name: string;
   type: 'folder' | 'file';
@@ -7,7 +9,7 @@ export type FileSystemItem = {
   children?: FileSystemItem[];
 };
 
-export const fileSystem: FileSystemItem[] = [
+export const initialFileSystem: FileSystemItem[] = [
   {
     name: 'Desktop',
     type: 'folder',
@@ -91,7 +93,15 @@ export const fileSystem: FileSystemItem[] = [
       ]},
     ],
   },
+  {
+    name: 'Trash',
+    type: 'folder',
+    modified: 'Apr 29, 2026',
+    children: [],
+  },
 ];
+
+export const fileSystemStore = atom<FileSystemItem[]>(initialFileSystem);
 
 /** Get file extension icon mapping */
 export function getFileIcon(name: string): string {

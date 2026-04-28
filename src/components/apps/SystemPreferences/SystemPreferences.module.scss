@@ -170,3 +170,33 @@
     object-fit: cover;
   }
 }
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--separator-color);
+  font-size: 0.9rem;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  input[type="range"] {
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: hsla(var(--app-color-dark-hsl), 0.2);
+    outline: none;
+    
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--app-color-dark);
+      cursor: pointer;
+    }
+  }
+}

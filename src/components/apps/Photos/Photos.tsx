@@ -12,9 +12,51 @@ const photoList = [
 const Photos = () => {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'library' | 'favorites'>('library');
+  const [customPhotos, setCustomPhotos] = useState<{name: string, url: string}[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: any) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: any) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      Array.from(e.dataTransfer.files).forEach((file: any) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            if (event.target?.result) {
+              setCustomPhotos(prev => [...prev, { name: file.name, url: event.target!.result as string }]);
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  };
+
+  const allPhotos = [
+    ...customPhotos,
+    ...photoList.map(p => ({ name: p, url: `/assets/wallpapers/${p}` }))
+  ];
 
   return (
-    <section class={css.container}>
+    <section 
+      class={clsx(css.container, isDragging && css.dragging)}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {isDragging && <div class={css.dropOverlay}>Drop images to add to Library</div>}
+      
       <header class={clsx(css.toolbar, 'app-window-drag-handle')}>
         <div class={css.tabs}>
           <button
@@ -35,22 +77,22 @@ const Photos = () => {
       {selectedPhoto ? (
         <div class={css.photoViewer}>
           <button class={css.closeViewer} onClick={() => setSelectedPhoto(null)}>✕</button>
-          <img src={`/assets/wallpapers/${selectedPhoto}`} alt={selectedPhoto} class={css.fullPhoto} />
+          <img src={allPhotos.find(p => p.name === selectedPhoto)?.url} alt={selectedPhoto} class={css.fullPhoto} />
           <div class={css.photoInfo}>
             <span>{selectedPhoto.replace('.jpg', '')}</span>
           </div>
         </div>
       ) : (
         <div class={css.grid}>
-          {photoList.map((photo) => (
+          {allPhotos.map((photo) => (
             <button
-              key={photo}
+              key={photo.name}
               class={css.photoThumb}
-              onClick={() => setSelectedPhoto(photo)}
+              onClick={() => setSelectedPhoto(photo.name)}
             >
               <img
-                src={`/assets/wallpapers/${photo}`}
-                alt={photo}
+                src={photo.url}
+                alt={photo.name}
                 loading="lazy"
               />
             </button>

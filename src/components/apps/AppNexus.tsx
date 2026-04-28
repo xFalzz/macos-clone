@@ -19,6 +19,8 @@ const FaceTime = lazy(() => import('./FaceTime/FaceTime'));
 const Terminal = lazy(() => import('./Terminal/Terminal'));
 const Notes = lazy(() => import('./Notes/Notes'));
 const Maps = lazy(() => import('./Maps/Maps'));
+const Music = lazy(() => import('./Music/Music'));
+const AboutThisMac = lazy(() => import('./AboutThisMac/AboutThisMac'));
 
 const PlaceholderApp = lazy(() => import('./Placeholder/Placeholder'));
 
@@ -36,6 +38,8 @@ export const AppNexus = ({ appID, isBeingDragged }: AppNexusProps) => {
   if (appID === 'terminal') return <Terminal />;
   if (appID === 'notes') return <Notes />;
   if (appID === 'maps') return <Maps isBeingDragged={isBeingDragged} />;
+  if (appID === 'music') return <Music />;
+  if (appID === 'about-this-mac') return <AboutThisMac />;
 
   return <PlaceholderApp appID={appID} />;
 };

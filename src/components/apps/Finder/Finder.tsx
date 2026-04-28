@@ -1,6 +1,7 @@
 import clsx from 'clsx';
+import { useAtom } from 'jotai';
 import { useState } from 'preact/hooks';
-import { fileSystem, FileSystemItem, getFileIcon } from '__/data/file-system';
+import { fileSystemStore, FileSystemItem, getFileIcon } from '__/data/file-system';
 import css from './Finder.module.scss';
 
 const sidebarItems = [
@@ -12,9 +13,11 @@ const sidebarItems = [
   { label: 'Downloads', icon: '⬇️', path: 'Downloads' },
   { label: 'Pictures', icon: '🖼️', path: 'Pictures' },
   { label: 'Music', icon: '🎵', path: 'Music' },
+  { label: 'Trash', icon: '🗑️', path: 'Trash' },
 ];
 
 const Finder = () => {
+  const [fileSystem, setFileSystem] = useAtom(fileSystemStore);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
@@ -77,6 +80,51 @@ const Finder = () => {
     }
   };
 
+  const handleKeyDown = (e: any) => {
+    if ((e.key === 'Backspace' || e.key === 'Delete') && selectedItem) {
+      setFileSystem((prev: FileSystemItem[]) => {
+        const newFs = JSON.parse(JSON.stringify(prev)); // Deep clone
+        let sourceFolder: FileSystemItem | null = null;
+        
+        // Find current folder
+        if (currentPath.length === 0) {
+          // Can't delete root items easily in this simple model without breaking structure
+          if (['Desktop', 'Documents', 'Downloads', 'Applications', 'Pictures', 'Music', 'Trash'].includes(selectedItem)) {
+            return prev; // Protect root folders
+          }
+        } else {
+          let current = newFs;
+          for (let i = 0; i < currentPath.length; i++) {
+            const found = current.find((item: any) => item.name === currentPath[i]);
+            if (found && found.children) {
+              if (i === currentPath.length - 1) {
+                sourceFolder = found;
+              }
+              current = found.children;
+            }
+          }
+        }
+        
+        if (sourceFolder && sourceFolder.children) {
+          const itemIndex = sourceFolder.children.findIndex((i: any) => i.name === selectedItem);
+          if (itemIndex >= 0) {
+            const itemToMove = sourceFolder.children[itemIndex];
+            sourceFolder.children.splice(itemIndex, 1);
+            
+            // Add to Trash
+            const trashFolder = newFs.find((i: any) => i.name === 'Trash');
+            if (trashFolder && trashFolder.children) {
+              trashFolder.children.push(itemToMove);
+            }
+          }
+        }
+        
+        return newFs;
+      });
+      setSelectedItem(null);
+    }
+  };
+
   return (
     <section class={css.container}>
       {/* Toolbar */}
@@ -96,6 +144,25 @@ const Finder = () => {
         </div>
         <span class={css.folderTitle}>{currentFolder}</span>
         <div class={css.viewButtons}>
+          {currentFolder === 'Trash' && (
+            <button
+              class={css.emptyTrashBtn}
+              onClick={() => {
+                setFileSystem((prev: FileSystemItem[]) => {
+                  const newFs = JSON.parse(JSON.stringify(prev));
+                  const trashFolder = newFs.find((i: any) => i.name === 'Trash');
+                  if (trashFolder) {
+                    trashFolder.children = [];
+                  }
+                  return newFs;
+                });
+                setSelectedItem(null);
+              }}
+              title="Empty Trash"
+            >
+              Empty
+            </button>
+          )}
           <button
             class={clsx(css.viewBtn, viewMode === 'grid' && css.active)}
             onClick={() => setViewMode('grid')}
@@ -135,7 +202,7 @@ const Finder = () => {
         </aside>
 
         {/* Main content */}
-        <main class={css.main}>
+        <main class={css.main} tabIndex={0} onKeyDown={handleKeyDown}>
           {items.length === 0 ? (
             <div class={css.emptyState}>
               <span class={css.emptyIcon}>📂</span>

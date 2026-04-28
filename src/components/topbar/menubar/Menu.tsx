@@ -17,6 +17,12 @@ export const Menu = ({ menu }: MenuProps) => {
               key={key}
               class={clsx(css.menuItem, menu[key].disabled && css.disabled)}
               disabled={menu[key].disabled}
+              onClick={(e) => {
+                if (menu[key].action) menu[key].action();
+                // We'll let the outside click or custom logic handle closing,
+                // but dispatching a generic close event helps.
+                document.dispatchEvent(new Event('close-menus'));
+              }}
             >
               {menu[key].title}
             </MenuItemButton>
@@ -44,7 +50,10 @@ const MenuItemButton = ({
       tabIndex={tabIndex}
       ref={ref}
       onKeyDown={handleKeyDown}
-      onClick={handleClick}
+      onClick={(e) => {
+        handleClick();
+        if (props.onClick) props.onClick(e);
+      }}
       {...props}
     >
       {children}

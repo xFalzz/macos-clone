@@ -77,6 +77,7 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
             src={url}
             onLoad={() => setIsLoading(false)}
             sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            allow="camera; microphone; display-capture; fullscreen; autoplay"
           />
         )}
       </div>

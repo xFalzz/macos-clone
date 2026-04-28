@@ -16,7 +16,7 @@ const wallpaperList = [
   'Tree.jpg', 'Valley.jpg',
 ];
 
-type Panel = 'main' | 'appearance' | 'desktop';
+type Panel = 'main' | 'appearance' | 'desktop' | 'sound';
 
 const prefPanels = [
   { id: 'appearance', icon: '🎨', label: 'General' },
@@ -63,7 +63,7 @@ const SystemPreferences = () => {
               key={p.id}
               class={css.prefItem}
               onClick={() => {
-                if (p.id === 'appearance' || p.id === 'desktop') {
+                if (p.id === 'appearance' || p.id === 'desktop' || p.id === 'sound') {
                   setPanel(p.id as Panel);
                 }
               }}
@@ -106,8 +106,47 @@ const SystemPreferences = () => {
                   key={color}
                   class={css.accentDot}
                   style={{ background: color }}
+                  onClick={() => {
+                    document.documentElement.style.setProperty('--app-color-primary', color);
+                    const hex = color.replace('#', '');
+                    const r = parseInt(hex.substring(0, 2), 16);
+                    const g = parseInt(hex.substring(2, 4), 16);
+                    const b = parseInt(hex.substring(4, 6), 16);
+                    // Approximation of HSL is complex, but we can set an RGB variable if needed.
+                    // For now setting primary is enough if the app uses it correctly.
+                    document.documentElement.style.setProperty('--app-color-primary-hsl', `${r}, ${g}, ${b}`);
+                  }}
                 />
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sound panel */}
+      {panel === 'sound' && (
+        <div class={css.panelContent}>
+          <div class={css.section}>
+            <h3 class={css.sectionTitle}>Sound Effects</h3>
+            <div class={css.settingRow}>
+              <span>Play user interface sound effects</span>
+              <input type="checkbox" checked />
+            </div>
+            <div class={css.settingRow}>
+              <span>Play feedback when volume is changed</span>
+              <input type="checkbox" checked />
+            </div>
+            <div class={css.settingRow}>
+              <span>Alert volume</span>
+              <input type="range" min="0" max="100" defaultValue="75" />
+            </div>
+          </div>
+          
+          <div class={css.section}>
+            <h3 class={css.sectionTitle}>Output</h3>
+            <div class={css.settingRow}>
+              <span>Output volume</span>
+              <input type="range" min="0" max="100" defaultValue="50" style={{ flex: 1 }} />
             </div>
           </div>
         </div>

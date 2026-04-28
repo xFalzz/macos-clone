@@ -1,7 +1,7 @@
 import { mdiApple } from '@mdi/js';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
-import { useRef } from 'preact/hooks';
+import { useRef, useEffect } from 'preact/hooks';
 import { AppIcon } from '__/components/utils/AppIcon';
 import { useFocusOutside, useOutsideClick } from '__/hooks';
 import { activeMenuStore, menuBarMenusStore } from '__/stores/menubar.store';
@@ -19,6 +19,13 @@ export const MenuBar = () => {
 
   /** Close when clicked outside */
   useOutsideClick(parentRef, () => setActiveMenu(''));
+
+  /** Close on custom event (e.g. from MenuItemButton action) */
+  useEffect(() => {
+    const handler = () => setActiveMenu('');
+    document.addEventListener('close-menus', handler);
+    return () => document.removeEventListener('close-menus', handler);
+  }, []);
 
   return (
     <div class={css.container} ref={parentRef}>
