@@ -16,6 +16,9 @@ const Mail = lazy(() => import('./Mail/Mail'));
 const Messages = lazy(() => import('./Messages/Messages'));
 const Photos = lazy(() => import('./Photos/Photos'));
 const FaceTime = lazy(() => import('./FaceTime/FaceTime'));
+const Terminal = lazy(() => import('./Terminal/Terminal'));
+const Notes = lazy(() => import('./Notes/Notes'));
+const Maps = lazy(() => import('./Maps/Maps'));
 
 const PlaceholderApp = lazy(() => import('./Placeholder/Placeholder'));
 
@@ -30,6 +33,9 @@ export const AppNexus = ({ appID, isBeingDragged }: AppNexusProps) => {
   if (appID === 'messages') return <Messages />;
   if (appID === 'photos') return <Photos />;
   if (appID === 'facetime') return <FaceTime />;
+  if (appID === 'terminal') return <Terminal />;
+  if (appID === 'notes') return <Notes />;
+  if (appID === 'maps') return <Maps isBeingDragged={isBeingDragged} />;
 
   return <PlaceholderApp appID={appID} />;
 };

@@ -1,0 +1,10 @@
+.container { height: 100%; display: grid; grid-template-rows: auto 1fr; border-radius: inherit; overflow: hidden; background-color: #1e1e1e; }
+.toolbar { display: flex; align-items: center; justify-content: center; padding: 0.5rem 0.75rem 0.5rem 4.5rem; background-color: #2d2d2d; border-bottom: 1px solid #3e3e3e; min-height: 2.2rem; }
+.toolbarTitle { font-size: 0.75rem; font-weight: 500; color: hsla(0, 0%, 100%, 0.6); }
+.terminal { padding: 0.5rem 0.75rem; overflow-y: auto; font-family: 'Menlo', 'Monaco', 'Courier New', monospace; font-size: 0.78rem; line-height: 1.5; color: #f0f0f0; cursor: text; }
+.line { white-space: pre-wrap; word-break: break-all;
+  pre { margin: 0; font-family: inherit; font-size: inherit; }
+}
+.inputLine { display: flex; align-items: flex-start; }
+.prompt { color: #4af626; font-weight: 500; white-space: nowrap; }
+.input { flex: 1; background: transparent; border: none; color: #f0f0f0; font-family: inherit; font-size: inherit; outline: none; caret-color: #4af626; padding: 0; }

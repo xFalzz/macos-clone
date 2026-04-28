@@ -6,6 +6,7 @@ import { RefObject } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 import { AppConfig } from '__/helpers/create-app-config';
 import { activeAppStore, AppID, openAppsStore } from '__/stores/apps.store';
+import { launchpadVisibleAtom } from '__/stores/launchpad.store';
 import css from './DockItem.module.scss';
 
 type DockItemProps = AppConfig & {
@@ -25,6 +26,7 @@ export function DockItem({
 }: DockItemProps) {
   const [, setOpenApps] = useImmerAtom(openAppsStore);
   const [, setActiveApp] = useAtom(activeAppStore);
+  const [, setLaunchpadVisible] = useAtom(launchpadVisibleAtom);
   const [animateObj, setAnimateObj] = useState({ translateY: ['0%', '0%', '0%'] });
 
   const imgRef = useRef<HTMLImageElement>();
@@ -32,6 +34,12 @@ export function DockItem({
   const { width } = useDockHoverAnimation(mouseX, imgRef);
 
   function openApp(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    // Special handling for Launchpad
+    if (appID === 'launchpad') {
+      setLaunchpadVisible((v) => !v);
+      return;
+    }
+
     if (!shouldOpenWindow) return void externalAction?.(e);
 
     setOpenApps((apps) => {
