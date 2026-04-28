@@ -10,14 +10,17 @@ type Props = {
   outerRef: RefObject<HTMLDivElement>;
 };
 
+import { fileSystemStore } from '__/data/file-system';
+import { activeAppStore, openAppsStore } from '__/stores/apps.store';
+
 export const ContextMenu = ({ outerRef }: Props) => {
   const { xPos, yPos, isMenuVisible, setIsMenuVisible } = useContextMenu(outerRef);
   const containerRef = useRef<HTMLDivElement>();
   const defMenu = contextMenuConfig.default;
 
-  const [, setFileSystem] = useAtom(import('__/data/file-system').then(m => m.fileSystemStore).catch(() => null as any) as any);
-  const [, setOpenApps] = useAtom(import('__/stores/apps.store').then(m => m.openAppsStore).catch(() => null as any) as any);
-  const [, setActiveApp] = useAtom(import('__/stores/apps.store').then(m => m.activeAppStore).catch(() => null as any) as any);
+  const [, setFileSystem] = useAtom(fileSystemStore);
+  const [, setOpenApps] = useAtom(openAppsStore);
+  const [, setActiveApp] = useAtom(activeAppStore);
 
   useEffect(() => {
     isMenuVisible && containerRef.current.focus();
@@ -30,38 +33,34 @@ export const ContextMenu = ({ outerRef }: Props) => {
     
     switch (key) {
       case 'new-folder':
-        import('__/data/file-system').then(m => {
-          setFileSystem((prev: any) => {
-            const newFs = JSON.parse(JSON.stringify(prev));
-            const desktop = newFs.find((i: any) => i.name === 'Desktop');
-            if (desktop) {
-              const baseName = 'untitled folder';
-              let name = baseName;
-              let counter = 1;
-              while (desktop.children?.find((i: any) => i.name === name)) {
-                counter++;
-                name = `${baseName} ${counter}`;
-              }
-              desktop.children = desktop.children || [];
-              desktop.children.push({
-                name,
-                type: 'folder',
-                modified: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-              });
+        setFileSystem((prev: any) => {
+          const newFs = JSON.parse(JSON.stringify(prev));
+          const desktop = newFs.find((i: any) => i.name === 'Desktop');
+          if (desktop) {
+            const baseName = 'untitled folder';
+            let name = baseName;
+            let counter = 1;
+            while (desktop.children?.find((i: any) => i.name === name)) {
+              counter++;
+              name = `${baseName} ${counter}`;
             }
-            return newFs;
-          });
+            desktop.children = desktop.children || [];
+            desktop.children.push({
+              name,
+              type: 'folder',
+              modified: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            });
+          }
+          return newFs;
         });
         break;
       case 'change-desktop-bg':
-        import('__/stores/apps.store').then(m => {
-          setOpenApps((apps: any) => {
-            const newApps = { ...apps };
-            newApps['system-preferences'] = true;
-            return newApps;
-          });
-          setActiveApp('system-preferences');
+        setOpenApps((apps: any) => {
+          const newApps = { ...apps };
+          newApps['system-preferences'] = true;
+          return newApps;
         });
+        setActiveApp('system-preferences');
         break;
       case 'get-info':
         alert('macOS Web Clone\nVersion 1.0\nCreated with React & Vite');
