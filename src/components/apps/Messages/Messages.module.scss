@@ -1,0 +1,33 @@
+.container { height: 100%; display: grid; grid-template-rows: auto 1fr; border-radius: inherit; overflow: hidden; background-color: var(--window-bg); }
+.toolbar { display: flex; align-items: center; padding: 0.5rem 0.75rem 0.5rem 4.5rem; background-color: var(--toolbar-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--separator-color); min-height: 2.5rem; }
+.toolbarTitle { font-size: 0.85rem; font-weight: 600; color: var(--app-color-light-contrast); }
+.body { display: grid; grid-template-columns: 250px 1fr; height: 100%; overflow: hidden; }
+.sidebar { background-color: var(--sidebar-bg); backdrop-filter: blur(20px); border-right: 1px solid var(--separator-color); overflow-y: auto; }
+.convoItem { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; width: 100%; text-align: left; cursor: default; border-bottom: 1px solid hsla(var(--app-color-dark-hsl), 0.04);
+  &:hover { background-color: hsla(var(--app-color-dark-hsl), 0.04); }
+  &.activeConvo { background-color: var(--app-color-primary); color: white;
+    .convoTime, .convoPreview { color: hsla(0, 0%, 100%, 0.7); }
+  }
+}
+.avatar { font-size: 1.8rem; }
+.convoInfo { flex: 1; min-width: 0; }
+.convoHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.1rem; }
+.convoName { font-size: 0.8rem; font-weight: 500; }
+.convoTime { font-size: 0.65rem; opacity: 0.5; }
+.convoPreview { font-size: 0.72rem; opacity: 0.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.chatArea { display: flex; flex-direction: column; height: 100%; }
+.chatHeader { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-bottom: 1px solid var(--separator-color); background: var(--toolbar-bg); }
+.chatAvatar { font-size: 1.5rem; }
+.chatName { font-size: 0.85rem; font-weight: 600; color: var(--app-color-light-contrast); }
+.messagesArea { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+.messageBubble { max-width: 70%; padding: 0.5rem 0.75rem; border-radius: 1rem; display: flex; flex-direction: column; gap: 0.15rem;
+  &.sent { align-self: flex-end; background-color: var(--app-color-primary); color: white; border-bottom-right-radius: 0.3rem; }
+  &.received { align-self: flex-start; background-color: hsla(var(--app-color-dark-hsl), 0.08); color: var(--app-color-light-contrast); border-bottom-left-radius: 0.3rem; }
+}
+.messageText { font-size: 0.8rem; line-height: 1.4; }
+.messageTime { font-size: 0.6rem; opacity: 0.5; align-self: flex-end; }
+.inputArea { padding: 0.5rem 0.75rem; border-top: 1px solid var(--separator-color); }
+.messageInput { width: 100%; border: 1px solid var(--separator-color); border-radius: 1.25rem; padding: 0.4rem 0.75rem; font-size: 0.8rem; font-family: var(--app-font-family); background: hsla(var(--app-color-dark-hsl), 0.03); color: var(--app-color-light-contrast); outline: none;
+  &::placeholder { color: var(--app-color-light-contrast); opacity: 0.35; }
+  &:focus { border-color: var(--app-color-primary); }
+}

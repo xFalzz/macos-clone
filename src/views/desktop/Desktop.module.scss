@@ -21,9 +21,5 @@
   background-size: cover;
   background-position: center;
 
-  background-image: url(/assets/wallpapers/37-2.jpg);
-
-  :global(body.dark) & {
-    background-image: url(/assets/wallpapers/37-1.jpg);
-  }
+  transition: background-image 0.5s ease;
 }
