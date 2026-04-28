@@ -61,7 +61,7 @@ export function DockItem({
       >
         <motion.img
           ref={imgRef}
-          src={`/assets/app-icons/${appID}/256.webp`}
+          src={`/assets/app-icons/${appID}/256.png`}
           draggable={false}
           style={{ width, willChange: 'width' }}
           alt={`${title} app icon`}
