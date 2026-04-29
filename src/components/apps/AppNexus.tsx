@@ -21,6 +21,8 @@ const Notes = lazy(() => import('./Notes/Notes'));
 const Maps = lazy(() => import('./Maps/Maps'));
 const Music = lazy(() => import('./Music/Music'));
 const AboutThisMac = lazy(() => import('./AboutThisMac/AboutThisMac'));
+const Contacts = lazy(() => import('./Contacts/Contacts'));
+const Reminders = lazy(() => import('./Reminders/Reminders'));
 
 const PlaceholderApp = lazy(() => import('./Placeholder/Placeholder'));
 
@@ -40,6 +42,8 @@ export const AppNexus = ({ appID, isBeingDragged }: AppNexusProps) => {
   if (appID === 'maps') return <Maps isBeingDragged={isBeingDragged} />;
   if (appID === 'music') return <Music />;
   if (appID === 'about-this-mac') return <AboutThisMac />;
+  if (appID === 'contacts') return <Contacts />;
+  if (appID === 'reminders') return <Reminders />;
 
   return <PlaceholderApp appID={appID} />;
 };

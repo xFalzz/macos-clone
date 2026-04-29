@@ -1,0 +1,19 @@
+.container { height: 100%; display: grid; grid-template-rows: auto 1fr; border-radius: inherit; overflow: hidden; background: var(--window-bg); }
+.toolbar { display: flex; align-items: center; justify-content: center; padding: 0.4rem 0.75rem 0.4rem 4.5rem; background: var(--toolbar-bg); backdrop-filter: blur(20px); border-bottom: 1px solid var(--separator-color); min-height: 2.5rem; }
+.title { font-size: 0.8rem; font-weight: 600; opacity: 0.7; }
+.body { display: grid; grid-template-columns: 180px 1fr; overflow: hidden; }
+.sidebar { border-right: 1px solid var(--separator-color); padding: 0.5rem 0; overflow-y: auto; background: hsla(var(--app-color-dark-hsl), 0.02); }
+.listItem { width: 100%; display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; border: none; background: transparent; cursor: pointer; font-size: 0.78rem; color: inherit; font-family: inherit; text-align: left; &:hover { background: hsla(var(--app-color-dark-hsl), 0.06); } &.active { background: var(--app-color-primary); color: white; .listCount { background: hsla(0,0%,100%,0.3); } } }
+.listDot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.listCount { margin-left: auto; font-size: 0.65rem; font-weight: 700; background: hsla(var(--app-color-dark-hsl), 0.1); border-radius: 10px; padding: 0 0.35rem; min-width: 18px; text-align: center; }
+.main { display: flex; flex-direction: column; overflow: hidden; }
+.listTitle { font-size: 1.5rem; font-weight: 800; padding: 1rem 1rem 0.5rem; }
+.items { flex: 1; overflow-y: auto; padding: 0 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+.reminderItem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; border-bottom: 1px solid hsla(var(--app-color-dark-hsl), 0.06); &.done .itemText { text-decoration: line-through; opacity: 0.4; } }
+.checkbox { width: 20px; height: 20px; border-radius: 50%; border: 2px solid; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; color: inherit; &:hover { background: hsla(var(--app-color-dark-hsl), 0.05); } }
+.itemContent { flex: 1; min-width: 0; }
+.itemText { font-size: 0.82rem; display: block; }
+.itemDate { font-size: 0.65rem; opacity: 0.4; }
+.deleteBtn { background: transparent; border: none; font-size: 1rem; cursor: pointer; opacity: 0; color: inherit; padding: 0.15rem; border-radius: 4px; .reminderItem:hover & { opacity: 0.4; } &:hover { opacity: 1 !important; background: hsla(0,50%,50%,0.15); } }
+.addArea { display: flex; gap: 0.5rem; padding: 0.6rem 1rem; border-top: 1px solid var(--separator-color); input { flex: 1; border: 1px solid var(--separator-color); border-radius: 8px; padding: 0.4rem 0.6rem; font-size: 0.78rem; background: hsla(var(--app-color-dark-hsl), 0.03); color: inherit; outline: none; font-family: inherit; &:focus { border-color: var(--app-color-primary); } } }
+.addBtn { background: var(--app-color-primary); color: white; border: none; border-radius: 8px; padding: 0 0.6rem; font-size: 1rem; cursor: pointer; font-weight: 700; &:hover { opacity: 0.85; } }

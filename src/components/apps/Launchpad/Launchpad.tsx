@@ -8,8 +8,8 @@ type LaunchpadApp = {
   id: AppID | string;
   name: string;
   icon: string;
-  isExternal?: boolean;
-  externalUrl?: string;
+  /** If set, will open Safari to this URL instead of opening an app window */
+  safariUrl?: string;
 };
 
 const launchpadApps: LaunchpadApp[] = [
@@ -26,14 +26,15 @@ const launchpadApps: LaunchpadApp[] = [
   { id: 'calculator', name: 'Calculator', icon: '/assets/app-icons/calculator/256.png' },
   { id: 'system-preferences', name: 'System Preferences', icon: '/assets/app-icons/system-preferences/256.png' },
   { id: 'vscode', name: 'VS Code', icon: '/assets/app-icons/vscode/256.png' },
-  { id: 'music', name: 'Music', icon: '/assets/app-icons/music/256.png', isExternal: true },
-  { id: 'news', name: 'News', icon: '/assets/app-icons/news/256.png', isExternal: true },
-  { id: 'podcasts', name: 'Podcasts', icon: '/assets/app-icons/podcasts/256.png', isExternal: true },
-  { id: 'tv', name: 'TV', icon: '/assets/app-icons/tv/256.png', isExternal: true },
-  { id: 'appstore', name: 'App Store', icon: '/assets/app-icons/appstore/256.png', isExternal: true },
-  { id: 'contacts', name: 'Contacts', icon: '/assets/app-icons/contacts/256.png', isExternal: true },
-  { id: 'reminders', name: 'Reminders', icon: '/assets/app-icons/reminders/256.png', isExternal: true },
-  { id: 'keynote', name: 'Keynote', icon: '/assets/app-icons/keynote/256.png', isExternal: true },
+  { id: 'music', name: 'Music', icon: '/assets/app-icons/music/256.png' },
+  { id: 'contacts', name: 'Contacts', icon: '/assets/app-icons/contacts/256.png' },
+  { id: 'reminders', name: 'Reminders', icon: '/assets/app-icons/reminders/256.png' },
+  // These open Safari to their respective web versions
+  { id: 'news', name: 'News', icon: '/assets/app-icons/news/256.png', safariUrl: 'https://news.google.com' },
+  { id: 'podcasts', name: 'Podcasts', icon: '/assets/app-icons/podcasts/256.png', safariUrl: 'https://podcasts.google.com' },
+  { id: 'tv', name: 'TV', icon: '/assets/app-icons/tv/256.png', safariUrl: 'https://www.youtube.com/embed' },
+  { id: 'appstore', name: 'App Store', icon: '/assets/app-icons/appstore/256.png', safariUrl: 'https://apps.apple.com' },
+  { id: 'keynote', name: 'Keynote', icon: '/assets/app-icons/keynote/256.png', safariUrl: 'https://www.icloud.com/keynote' },
 ];
 
 export const Launchpad = () => {
@@ -44,8 +45,10 @@ export const Launchpad = () => {
   if (!visible) return null;
 
   const handleAppClick = (app: LaunchpadApp) => {
-    if (app.isExternal) {
-      // Just close Launchpad for non-functional apps
+    if (app.safariUrl) {
+      // Open Safari and navigate to the URL
+      setOpenApps((prev) => ({ ...prev, safari: true }));
+      setActiveApp('safari' as AppID);
       setVisible(false);
       return;
     }

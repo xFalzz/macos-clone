@@ -19,6 +19,8 @@ export const openAppsStore = atom<Record<AppID, boolean>>({
   notes: false,
   maps: false,
   music: false,
+  contacts: false,
+  reminders: false,
   launchpad: false,
   'about-this-mac': false,
 
