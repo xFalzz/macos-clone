@@ -11,3 +11,6 @@ export const airdropAtom = atom(false);
 
 /** Screen brightness (0 to 100) */
 export const brightnessAtom = atom(100);
+
+/** System volume (0 to 100) */
+export const volumeAtom = atom(100);

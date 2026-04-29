@@ -9,6 +9,7 @@ import {
   airdropAtom,
   bluetoothAtom,
   brightnessAtom,
+  volumeAtom,
   wifiAtom,
 } from '__/stores/action-center.store';
 import css from './ActionCenter.module.scss';
@@ -22,6 +23,7 @@ export const ActionCenter = () => {
   const [bluetooth, setBluetooth] = useAtom(bluetoothAtom);
   const [airdrop, setAirdrop] = useAtom(airdropAtom);
   const [brightness, setBrightness] = useAtom(brightnessAtom);
+  const [volume, setVolume] = useAtom(volumeAtom);
 
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
@@ -95,8 +97,8 @@ export const ActionCenter = () => {
         {/* Brightness Slider */}
         <ActionCenterSurface
           grid={[
-            [1, 6],
-            [5, 8],
+            [1, 12],
+            [5, 2],
           ]}
         >
           <div class={css.sliderSection}>
@@ -131,6 +133,34 @@ export const ActionCenter = () => {
                 <line x1="11.6" y1="11.6" x2="13.7" y2="13.7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 <line x1="2.3" y1="13.7" x2="4.4" y2="11.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 <line x1="11.6" y1="4.4" x2="13.7" y2="2.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+          </div>
+        </ActionCenterSurface>
+
+        {/* Sound Slider */}
+        <ActionCenterSurface
+          grid={[
+            [1, 12],
+            [7, 2],
+          ]}
+        >
+          <div class={css.sliderSection}>
+            <label class={css.sliderLabel}>Sound</label>
+            <div class={css.sliderContainer}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M7 3v10L3 9H1V7h2l4-4zm2.5 2c1.2 0 2 1 2 3s-.8 3-2 3v-1.5c.5 0 1-.5 1-1.5s-.5-1.5-1-1.5V5z" />
+              </svg>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onInput={(e) => setVolume(Number((e.target as HTMLInputElement).value))}
+                class={css.slider}
+              />
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M7 3v10L3 9H1V7h2l4-4zm3 1c1.8 0 3 1.5 3 4s-1.2 4-3 4v-1.5c1 0 1.5-.8 1.5-2.5S11 5.5 10 5.5V4zm2-2c3 0 5 2 5 6s-2 6-5 6v-1.5c2.2 0 3.5-1.5 3.5-4.5S14.2 3.5 12 3.5V2z" />
               </svg>
             </div>
           </div>
