@@ -1,6 +1,7 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const systemPreferencesAppConfig = createAppConfig({
+  showInDock: false,
   title: 'System Preferences',
   resizable: true,
   height: 500,

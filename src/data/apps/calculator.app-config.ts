@@ -1,6 +1,7 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const calculatorAppConfig = createAppConfig({
+  showInDock: false,
   title: 'Calculator',
 
   expandable: true,

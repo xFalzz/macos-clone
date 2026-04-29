@@ -13,11 +13,11 @@ type Contact = {
 };
 
 const defaultContacts: Contact[] = [
-  { id: 1, name: 'Ahmad Rizki', phone: '+62 812-3456-7890', email: 'ahmad@mail.com', company: 'Tech Corp' },
-  { id: 2, name: 'Budi Santoso', phone: '+62 813-9876-5432', email: 'budi@mail.com', company: 'Design Studio' },
-  { id: 3, name: 'Clara Dewi', phone: '+62 821-1234-5678', email: 'clara@mail.com', company: 'University' },
-  { id: 4, name: 'Diana Putri', phone: '+62 856-7890-1234', email: 'diana@mail.com', company: 'Startup Inc' },
-  { id: 5, name: 'Evan Wijaya', phone: '+62 878-2345-6789', email: 'evan@mail.com', company: 'Freelance' },
+  { id: 1, name: 'John Doe', phone: '+1 555-0100', email: 'john.doe@example.com', company: 'Acme Corp' },
+  { id: 2, name: 'Jane Smith', phone: '+1 555-0101', email: 'jane.smith@example.com', company: 'Tech LLC' },
+  { id: 3, name: 'Alice Johnson', phone: '+1 555-0102', email: 'alice.j@example.com', company: 'Global Industries' },
+  { id: 4, name: 'Bob Williams', phone: '+1 555-0103', email: 'bob.w@example.com', company: 'Local Startup' },
+  { id: 5, name: 'Charlie Brown', phone: '+1 555-0104', email: 'charlie.b@example.com', company: 'Design Agency' },
 ];
 
 const contactsAtom = atomWithStorage<Contact[]>('macos:contacts', defaultContacts);

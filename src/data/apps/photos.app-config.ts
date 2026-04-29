@@ -1,6 +1,7 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const photosAppConfig = createAppConfig({
+  showInDock: false,
   title: 'Photos',
   resizable: true,
   height: 550,

@@ -11,7 +11,10 @@ export const Dock = () => {
 
   const mouseX = useMotionValue<number | null>(null);
 
-  // Hi
+  const dockApps = Object.keys(appsConfig).filter(
+    (appID) => appsConfig[appID as keyof typeof appsConfig].showInDock !== false || openApps[appID as keyof typeof appsConfig]
+  );
+
   return (
     <section id="dock" class={css.container}>
       <div
@@ -20,17 +23,17 @@ export const Dock = () => {
         onMouseLeave={() => mouseX.set(null)}
       >
         <RovingTabIndexProvider options={{ direction: 'horizontal' }}>
-          {Object.keys(appsConfig).filter(appID => appsConfig[appID].showInDock !== false).map((appID, i) => (
-            <div key={appID}>
-              {appsConfig[appID].dockBreaksBefore && (
-                <div class={css.divider} key={`${appID}-divider`} aria-hidden="true" />
+          {dockApps.map((appID, i) => (
+            <div key={appID} style={{ display: 'contents' }}>
+              {appsConfig[appID as keyof typeof appsConfig].dockBreaksBefore && (
+                <div class={css.divider} aria-hidden="true" />
               )}
               <DockItem
                 index={i}
                 mouseX={mouseX}
-                appID={appID}
-                isOpen={openApps[appID]}
-                {...appsConfig[appID]}
+                appID={appID as keyof typeof appsConfig}
+                isOpen={openApps[appID as keyof typeof appsConfig]}
+                {...appsConfig[appID as keyof typeof appsConfig]}
               />
             </div>
           ))}

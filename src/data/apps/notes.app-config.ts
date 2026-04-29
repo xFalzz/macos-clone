@@ -1,6 +1,7 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const notesAppConfig = createAppConfig({
+  showInDock: false,
   title: 'Notes',
   resizable: true,
   height: 500,

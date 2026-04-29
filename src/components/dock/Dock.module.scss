@@ -42,10 +42,10 @@
 }
 
 .divider {
-  height: 100%;
-  width: 0.2px;
-
-  background-color: hsla(var(--app-color-dark-hsl), 0.3);
-
-  margin: 0 2px;
+  height: 65%;
+  width: 1.5px;
+  background-color: hsla(var(--app-color-dark-hsl), 0.2);
+  margin: 0 0.5rem;
+  border-radius: 1px;
+  align-self: center;
 }

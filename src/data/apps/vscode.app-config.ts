@@ -1,6 +1,7 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const vscodeAppConfig = createAppConfig({
+  showInDock: false,
   title: 'VSCode',
   resizable: true,
 
