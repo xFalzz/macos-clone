@@ -24,7 +24,9 @@
     white-space: nowrap;
 
     position: absolute;
-    top: -35%;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
 
     background-color: hsla(var(--app-color-light-hsl), 0.5);
     backdrop-filter: blur(5px);
