@@ -1,4 +1,6 @@
 import clsx from 'clsx';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { useState } from 'preact/hooks';
 import css from './Notes.module.scss';
 
@@ -10,11 +12,12 @@ const defaultNotes: Note[] = [
   { id: 3, title: 'Project Ideas', content: '1. Portfolio website redesign\n2. Real-time chat application\n3. AI-powered code assistant\n4. Mobile game prototype', date: 'Apr 25, 2026' },
 ];
 
+const notesAtom = atomWithStorage<Note[]>('macos:notes', defaultNotes);
 let nextId = 4;
 
 const Notes = () => {
-  const [notes, setNotes] = useState<Note[]>(defaultNotes);
-  const [selectedId, setSelectedId] = useState(1);
+  const [notes, setNotes] = useAtom(notesAtom);
+  const [selectedId, setSelectedId] = useState(notes.length > 0 ? notes[0].id : 1);
 
   const selectedNote = notes.find((n) => n.id === selectedId);
 

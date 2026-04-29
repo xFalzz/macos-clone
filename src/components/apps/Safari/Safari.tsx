@@ -21,6 +21,19 @@ const Safari = ({ isBeingDragged }: SafariProps) => {
       return;
     }
 
+    // Security: block dangerous protocols
+    const lowerUrl = targetUrl.toLowerCase().replace(/\s/g, '');
+    if (
+      lowerUrl.startsWith('javascript:') ||
+      lowerUrl.startsWith('data:') ||
+      lowerUrl.startsWith('file:') ||
+      lowerUrl.startsWith('vbscript:') ||
+      lowerUrl.startsWith('blob:')
+    ) {
+      alert('⚠️ This URL is blocked for security reasons.');
+      return;
+    }
+
     if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
       targetUrl = 'https://' + targetUrl;
     }

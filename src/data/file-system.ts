@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 
 export type FileSystemItem = {
   name: string;
@@ -101,7 +101,7 @@ export const initialFileSystem: FileSystemItem[] = [
   },
 ];
 
-export const fileSystemStore = atom<FileSystemItem[]>(initialFileSystem);
+export const fileSystemStore = atomWithStorage<FileSystemItem[]>('macos:file-system', initialFileSystem);
 
 /** Get file extension icon mapping */
 export function getFileIcon(name: string): string {

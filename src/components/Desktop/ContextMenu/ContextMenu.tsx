@@ -12,6 +12,7 @@ type Props = {
 
 import { fileSystemStore } from '__/data/file-system';
 import { activeAppStore, openAppsStore } from '__/stores/apps.store';
+import { notificationsAtom, pushNotification } from '__/stores/notifications.store';
 
 export const ContextMenu = ({ outerRef }: Props) => {
   const { xPos, yPos, isMenuVisible, setIsMenuVisible } = useContextMenu(outerRef);
@@ -21,6 +22,7 @@ export const ContextMenu = ({ outerRef }: Props) => {
   const [, setFileSystem] = useAtom(fileSystemStore);
   const [, setOpenApps] = useAtom(openAppsStore);
   const [, setActiveApp] = useAtom(activeAppStore);
+  const [, setNotifications] = useAtom(notificationsAtom);
 
   useEffect(() => {
     isMenuVisible && containerRef.current.focus();
@@ -53,6 +55,7 @@ export const ContextMenu = ({ outerRef }: Props) => {
           }
           return newFs;
         });
+        setNotifications(prev => [...prev, pushNotification('Finder', 'New folder created on Desktop', '📁')]);
         break;
       case 'change-desktop-bg':
         setOpenApps((apps: any) => {
