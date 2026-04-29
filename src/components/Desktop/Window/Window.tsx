@@ -7,7 +7,7 @@ import { Rnd } from 'react-rnd';
 import { AppNexus } from '__/components/apps/AppNexus';
 import { appsConfig } from '__/data/apps/apps-config';
 import { randint } from '__/helpers/random';
-import { activeAppStore, activeAppZIndexStore, AppID } from '__/stores/apps.store';
+import { activeAppStore, activeAppZIndexStore, AppID, minimizedAppsStore } from '__/stores/apps.store';
 import { TrafficLights } from './TrafficLights';
 import css from './Window.module.scss';
 
@@ -32,6 +32,7 @@ class WindowRnd extends Rnd {
 export const Window = ({ appID }: WindowProps) => {
   const [activeAppZIndex] = useAtom(activeAppZIndexStore);
   const [activeApp, setActiveApp] = useAtom(activeAppStore);
+  const [minimizedApps] = useAtom(minimizedAppsStore);
 
   const containerRef = useRef<HTMLDivElement>();
 
@@ -43,6 +44,8 @@ export const Window = ({ appID }: WindowProps) => {
 
   const windowRef = useRef<WindowRnd>();
   const maximizeApp = useMaximizeWindow(windowRef);
+
+  const isMinimized = minimizedApps[appID];
 
   useEffect(() => {
     if (activeApp === appID) setAppZIndex(activeAppZIndex);
@@ -56,7 +59,6 @@ export const Window = ({ appID }: WindowProps) => {
 
   const focusCurrentApp = () => {
     setActiveApp(appID);
-    console.log(activeApp);
   };
 
   return (
@@ -79,6 +81,7 @@ export const Window = ({ appID }: WindowProps) => {
         setIsBeingDragged(true);
       }}
       onDragStop={() => setIsBeingDragged(false)}
+      className={clsx(css.windowRnd, isMinimized && css.minimized)}
     >
       <section class={css.container} tabIndex={-1} ref={containerRef} onClick={focusCurrentApp}>
         <div

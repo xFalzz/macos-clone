@@ -5,7 +5,7 @@ import { CloseIcon } from '__/assets/traffic-icons/Close.svg';
 import { GreenLightIcon } from '__/assets/traffic-icons/GreenLightIcon';
 import { MinimizeIcon } from '__/assets/traffic-icons/Minimize.svg';
 import { appsConfig } from '__/data/apps/apps-config';
-import { activeAppStore, AppID, openAppsStore } from '__/stores/apps.store';
+import { activeAppStore, AppID, openAppsStore, minimizedAppsStore } from '__/stores/apps.store';
 import css from './TrafficLights.module.scss';
 
 type TrafficLightProps = {
@@ -16,12 +16,19 @@ type TrafficLightProps = {
 
 export const TrafficLights = ({ appID, onMaximizeClick, class: className }: TrafficLightProps) => {
   const [, setOpenApps] = useImmerAtom(openAppsStore);
+  const [, setMinimizedApps] = useImmerAtom(minimizedAppsStore);
   const [activeApp] = useAtom(activeAppStore);
 
   const closeApp = () =>
     setOpenApps((openApps) => {
       openApps[appID] = false;
       return openApps;
+    });
+
+  const minimizeApp = () =>
+    setMinimizedApps((minimizedApps) => {
+      minimizedApps[appID] = true;
+      return minimizedApps;
     });
 
   const greenLightAction = () => {
@@ -37,7 +44,7 @@ export const TrafficLights = ({ appID, onMaximizeClick, class: className }: Traf
       <button class={css.closeLight} onClick={closeApp}>
         <CloseIcon />
       </button>
-      <button class={css.minimizeLight}>
+      <button class={css.minimizeLight} onClick={minimizeApp}>
         <MinimizeIcon />
       </button>
       <button class={css.stretchLight} onClick={greenLightAction}>

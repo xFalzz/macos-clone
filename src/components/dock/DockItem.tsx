@@ -5,7 +5,7 @@ import { useImmerAtom } from 'jotai/immer';
 import { RefObject } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 import { AppConfig } from '__/helpers/create-app-config';
-import { activeAppStore, AppID, openAppsStore } from '__/stores/apps.store';
+import { activeAppStore, AppID, openAppsStore, minimizedAppsStore } from '__/stores/apps.store';
 import { launchpadVisibleAtom } from '__/stores/launchpad.store';
 import css from './DockItem.module.scss';
 
@@ -25,6 +25,7 @@ export function DockItem({
   shouldOpenWindow,
 }: DockItemProps) {
   const [, setOpenApps] = useImmerAtom(openAppsStore);
+  const [, setMinimizedApps] = useImmerAtom(minimizedAppsStore);
   const [, setActiveApp] = useAtom(activeAppStore);
   const [, setLaunchpadVisible] = useAtom(launchpadVisibleAtom);
   const [animateObj, setAnimateObj] = useState({ translateY: ['0%', '0%', '0%'] });
@@ -45,6 +46,10 @@ export function DockItem({
     setOpenApps((apps) => {
       apps[appID] = true;
       return apps;
+    });
+    setMinimizedApps((minimizedApps) => {
+      minimizedApps[appID] = false;
+      return minimizedApps;
     });
     setActiveApp(appID);
   }

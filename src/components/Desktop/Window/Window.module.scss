@@ -43,3 +43,13 @@
   // Necessary, as `.container` tries to apply shadow on it
   box-shadow: none !important;
 }
+
+.windowRnd {
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
+}
+
+.windowRnd.minimized {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.7) translateY(200px) !important;
+}
