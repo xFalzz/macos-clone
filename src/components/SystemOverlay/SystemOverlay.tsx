@@ -11,6 +11,9 @@ export const SystemOverlay = () => {
   const [wallpaper] = useAtom(wallpaperAtom);
   const [showLogin, setShowLogin] = useState(false);
   const [password, setPassword] = useState('');
+  const [isError, setIsError] = useState(false);
+  const [time, setTime] = useState('');
+  const [date, setDate] = useState('');
 
   const [, setOpenApps] = useAtom(openAppsStore);
   const [, setActiveApp] = useAtom(activeAppStore);
@@ -43,8 +46,20 @@ export const SystemOverlay = () => {
     } else {
       setShowLogin(false);
       setPassword('');
+      setIsError(false);
     }
   }, [systemState]);
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(' AM', '').replace(' PM', ''));
+      setDate(now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
+    };
+    updateClock();
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Handle waking up from sleep
   useEffect(() => {
@@ -64,8 +79,19 @@ export const SystemOverlay = () => {
   }, [systemState, setSystemState]);
 
   const handleLogin = (e: any) => {
-    e.preventDefault();
-    setSystemState('awake');
+    e?.preventDefault();
+    const now = new Date();
+    const expectedPassword = `${now.getFullYear() + (now.getMonth() + 1) + now.getDate()}`;
+    
+    if (password === expectedPassword || password === 'admin') {
+      setSystemState('awake');
+      setPassword('');
+      setIsError(false);
+    } else {
+      setIsError(true);
+      setPassword('');
+      setTimeout(() => setIsError(false), 500);
+    }
   };
 
   if (systemState === 'awake') return null;
@@ -80,24 +106,45 @@ export const SystemOverlay = () => {
       {systemState === 'restart' && <div class={css.appleLogo}>🍎</div>}
       
       {showLogin && (
-        <div class={css.loginBox}>
-          <img src="/assets/profile.jpg" alt="Profile" class={css.profilePic} onError={(e) => (e.currentTarget.style.display = 'none')} />
-          <div class={css.profilePlaceholder}>N</div>
-          <h2>nawfal</h2>
-          <form onSubmit={handleLogin} class={css.passwordForm}>
-            <input 
-              type="password" 
-              placeholder="Enter Password (any)" 
-              value={password}
-              onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
-              autoFocus
-            />
-            <button type="submit">→</button>
-          </form>
-          <div class={css.bottomActions}>
-            <button type="button" onClick={() => setSystemState('sleep')}>Sleep</button>
-            <button type="button" onClick={() => setSystemState('restart')}>Restart</button>
-            <button type="button" onClick={() => setSystemState('shutdown')}>Shut Down</button>
+        <div class={css.lockScreenContent}>
+          <div class={css.clockContainer}>
+            <div class={css.time}>{time}</div>
+            <div class={css.date}>{date}</div>
+          </div>
+
+          <div class={css.loginContainer}>
+            <div class={css.avatar}>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="8" r="4" fill="currentColor" />
+                <path d="M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class={css.username}>Admin</div>
+            
+            <form onSubmit={handleLogin} class={clsx(css.passwordForm, isError && css.shake)}>
+              <input 
+                type="password" 
+                placeholder="Enter Password" 
+                value={password}
+                onInput={(e) => setPassword(e.currentTarget.value)}
+                autoFocus
+              />
+              <button type="submit" aria-label="Unlock">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </form>
+
+            <div class={css.hint}>
+              Hint: Password is YYYY + MM + DD
+            </div>
+
+            <div class={css.bottomActions}>
+              <button type="button" onClick={() => setSystemState('sleep')}>Sleep</button>
+              <button type="button" onClick={() => setSystemState('restart')}>Restart</button>
+              <button type="button" onClick={() => setSystemState('shutdown')}>Shut Down</button>
+            </div>
           </div>
         </div>
       )}

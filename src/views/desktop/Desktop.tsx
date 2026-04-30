@@ -68,7 +68,7 @@ export const Desktop = () => {
     e.preventDefault();
     setIsDragging(false);
     
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
       const newFiles = Array.from(e.dataTransfer.files).map((file: any) => ({
         name: file.name,
         type: 'file' as const,
