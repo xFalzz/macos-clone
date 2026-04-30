@@ -8,6 +8,7 @@ import { AppNexus } from '__/components/apps/AppNexus';
 import { appsConfig } from '__/data/apps/apps-config';
 import { randint } from '__/helpers/random';
 import { activeAppStore, activeAppZIndexStore, AppID, minimizedAppsStore } from '__/stores/apps.store';
+import { snapZoneAtom, SnapZone } from '__/stores/snap.store';
 import { TrafficLights } from './TrafficLights';
 import css from './Window.module.scss';
 
@@ -33,6 +34,7 @@ export const Window = ({ appID }: WindowProps) => {
   const [activeAppZIndex] = useAtom(activeAppZIndexStore);
   const [activeApp, setActiveApp] = useAtom(activeAppStore);
   const [minimizedApps] = useAtom(minimizedAppsStore);
+  const [, setSnapZone] = useAtom(snapZoneAtom);
 
   const containerRef = useRef<HTMLDivElement>();
 
@@ -76,11 +78,38 @@ export const Window = ({ appID }: WindowProps) => {
       bounds="parent"
       minWidth="300"
       minHeight="300"
+      onDrag={(_e: any, d: any) => {
+        const threshold = 8;
+        const screenW = window.innerWidth;
+        if (d.x <= threshold) setSnapZone('left');
+        else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenW - threshold) setSnapZone('right');
+        else if (d.y <= threshold) setSnapZone('top');
+        else setSnapZone(null);
+      }}
       onDragStart={() => {
         focusCurrentApp();
         setIsBeingDragged(true);
       }}
-      onDragStop={() => setIsBeingDragged(false)}
+      onDragStop={(_e: any, d: any) => {
+        setIsBeingDragged(false);
+        const threshold = 8;
+        const screenW = window.innerWidth;
+        const topBarH = document.getElementById('top-bar')?.clientHeight ?? 0;
+        const dockH = document.getElementById('dock')?.clientHeight ?? 0;
+        const desktopH = document.body.clientHeight - topBarH - dockH;
+
+        if (d.x <= threshold && windowRef.current) {
+          windowRef.current.updateSize({ width: screenW / 2, height: desktopH });
+          windowRef.current.updatePosition({ x: 0, y: 0 });
+        } else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenW - threshold && windowRef.current) {
+          windowRef.current.updateSize({ width: screenW / 2, height: desktopH });
+          windowRef.current.updatePosition({ x: screenW / 2, y: 0 });
+        } else if (d.y <= threshold && windowRef.current) {
+          windowRef.current.updateSize({ width: screenW, height: desktopH });
+          windowRef.current.updatePosition({ x: 0, y: 0 });
+        }
+        setSnapZone(null);
+      }}
       className={clsx(css.windowRnd, isMinimized && css.minimized)}
     >
       <section class={css.container} tabIndex={-1} ref={containerRef} onClick={focusCurrentApp}>

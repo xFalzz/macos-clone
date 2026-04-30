@@ -1,0 +1,30 @@
+.preview {
+  position: fixed;
+  z-index: 9800;
+  background: hsla(var(--app-color-primary-hsl), 0.12);
+  border: 2px solid hsla(var(--app-color-primary-hsl), 0.35);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.left {
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+}
+
+.right {
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+}
+
+.top {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
