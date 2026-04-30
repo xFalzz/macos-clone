@@ -45,7 +45,7 @@ export const Window = ({ appID }: WindowProps) => {
   const randY = useMemo(() => randint(-100, 100), []);
 
   const windowRef = useRef<WindowRnd>();
-  const maximizeApp = useMaximizeWindow(windowRef);
+  const tileWindow = useTileWindow(windowRef);
 
   const isMinimized = minimizedApps[appID];
 
@@ -79,10 +79,13 @@ export const Window = ({ appID }: WindowProps) => {
       minWidth="300"
       minHeight="300"
       onDrag={(_e: any, d: any) => {
-        const threshold = 8;
+        const threshold = 16;
         const screenW = window.innerWidth;
-        if (d.x <= threshold) setSnapZone('left');
-        else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenW - threshold) setSnapZone('right');
+        const screenLeft = screenW / 2; // Offset because parent is left: -50vw
+        const screenRight = screenW * 1.5;
+        
+        if (d.x <= screenLeft + threshold) setSnapZone('left');
+        else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenRight - threshold) setSnapZone('right');
         else if (d.y <= threshold) setSnapZone('top');
         else setSnapZone(null);
       }}
@@ -92,21 +95,23 @@ export const Window = ({ appID }: WindowProps) => {
       }}
       onDragStop={(_e: any, d: any) => {
         setIsBeingDragged(false);
-        const threshold = 8;
+        const threshold = 16;
         const screenW = window.innerWidth;
+        const screenLeft = screenW / 2;
+        const screenRight = screenW * 1.5;
         const topBarH = document.getElementById('top-bar')?.clientHeight ?? 0;
         const dockH = document.getElementById('dock')?.clientHeight ?? 0;
         const desktopH = document.body.clientHeight - topBarH - dockH;
 
-        if (d.x <= threshold && windowRef.current) {
+        if (d.x <= screenLeft + threshold && windowRef.current) {
           windowRef.current.updateSize({ width: screenW / 2, height: desktopH });
-          windowRef.current.updatePosition({ x: 0, y: 0 });
-        } else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenW - threshold && windowRef.current) {
+          windowRef.current.updatePosition({ x: screenLeft, y: 0 });
+        } else if (d.x + (windowRef.current?.resizableElement?.current?.clientWidth || 0) >= screenRight - threshold && windowRef.current) {
           windowRef.current.updateSize({ width: screenW / 2, height: desktopH });
-          windowRef.current.updatePosition({ x: screenW / 2, y: 0 });
+          windowRef.current.updatePosition({ x: screenLeft + screenW / 2, y: 0 });
         } else if (d.y <= threshold && windowRef.current) {
           windowRef.current.updateSize({ width: screenW, height: desktopH });
-          windowRef.current.updatePosition({ x: 0, y: 0 });
+          windowRef.current.updatePosition({ x: screenLeft, y: 0 });
         }
         setSnapZone(null);
       }}
@@ -117,7 +122,7 @@ export const Window = ({ appID }: WindowProps) => {
           style={trafficLightsStyle}
           class={clsx(css.trafficLightsContainer, 'app-window-drag-handle')}
         >
-          <TrafficLights appID={appID} onMaximizeClick={maximizeApp} />
+          <TrafficLights appID={appID} onTileClick={tileWindow} />
         </div>
         <Suspense fallback={<span></span>}>
           <AppNexus appID={appID} isBeingDragged={isBeingDragged} />
@@ -144,7 +149,7 @@ function extractPositionFromTransformStyle(transformStyle: string): WindowPositi
   }
 }
 
-const useMaximizeWindow = (windowRef: RefObject<WindowRnd>) => {
+const useTileWindow = (windowRef: RefObject<WindowRnd>) => {
   const originalSizeRef = useRef<WindowSize>({ height: 0, width: 0 });
   const originalPositionRef = useRef<WindowPosition>({
     x: 0,
@@ -152,34 +157,27 @@ const useMaximizeWindow = (windowRef: RefObject<WindowRnd>) => {
   });
   const transitionClearanceRef = useRef<number>();
 
-  return () => {
+  return (type: 'maximize' | 'left' | 'right') => {
     if (!windowRef?.current?.resizableElement?.current || !windowRef?.current?.base) {
       return;
     }
 
-    // Get desktop height and width
     const dockElementHeight = document.getElementById('dock')?.clientHeight ?? 0;
     const topBarElementHeight = document.getElementById('top-bar')?.clientHeight ?? 0;
     const desktopHeight = document.body.clientHeight - dockElementHeight - topBarElementHeight;
     const deskTopWidth = document.body.clientWidth;
 
-    // Get current height and width
     const { clientWidth: windowWidth, clientHeight: windowHeight } =
       windowRef.current.resizableElement.current;
 
-    // Get current left and top position
     const { x: windowLeft, y: windowTop } = extractPositionFromTransformStyle(
       windowRef.current.base.style.transform,
     );
 
-    // Only when maximizing (not dragging or resizing), should it have transition
     windowRef.current.base.style.transition =
       'height 0.3s ease, width 0.3s ease, transform 0.3s ease';
 
-    // Prevent removing transition styles when multiple times of maximizing action takes place in a short period
     clearTimeout(transitionClearanceRef.current);
-
-    // Transition style gets cleared after 0.5 second as transition only lasts 0.5 second
     transitionClearanceRef.current = setTimeout(() => {
       if (windowRef.current?.base) {
         windowRef.current.base.style.transition = '';
@@ -187,25 +185,26 @@ const useMaximizeWindow = (windowRef: RefObject<WindowRnd>) => {
       transitionClearanceRef.current = 0;
     }, 300);
 
-    // When it's already maximized, revert the window to the previous size
-    if (windowWidth === deskTopWidth && windowHeight === desktopHeight) {
-      windowRef.current.updateSize(originalSizeRef.current);
-      windowRef.current.updatePosition(originalPositionRef.current);
-    }
-    // Maximize the window to the size of the desktop
-    else {
+    // Save original state if not currently tiled (full or half screen)
+    if (windowWidth !== deskTopWidth && windowWidth !== deskTopWidth / 2) {
       originalSizeRef.current = { width: windowWidth, height: windowHeight };
       originalPositionRef.current = { x: windowLeft, y: windowTop };
+    }
 
-      windowRef.current.updateSize({
-        height: desktopHeight,
-        width: deskTopWidth,
-      });
-
-      windowRef.current.updatePosition({
-        x: 0,
-        y: 0,
-      });
+    if (type === 'maximize') {
+      if (windowWidth === deskTopWidth && windowHeight === desktopHeight) {
+        windowRef.current.updateSize(originalSizeRef.current);
+        windowRef.current.updatePosition(originalPositionRef.current);
+      } else {
+        windowRef.current.updateSize({ height: desktopHeight, width: deskTopWidth });
+        windowRef.current.updatePosition({ x: deskTopWidth / 2, y: 0 });
+      }
+    } else if (type === 'left') {
+      windowRef.current.updateSize({ height: desktopHeight, width: deskTopWidth / 2 });
+      windowRef.current.updatePosition({ x: deskTopWidth / 2, y: 0 });
+    } else if (type === 'right') {
+      windowRef.current.updateSize({ height: desktopHeight, width: deskTopWidth / 2 });
+      windowRef.current.updatePosition({ x: deskTopWidth, y: 0 });
     }
   };
 };

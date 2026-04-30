@@ -50,3 +50,67 @@
   --bgcolor: #ffbd2e;
   --border-color: #dea123;
 }
+
+.stretchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &:hover .tilingMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transition-delay: 0.5s; // Delay to prevent accidental triggers
+  }
+}
+
+.tilingMenu {
+  position: absolute;
+  top: 150%;
+  left: 0;
+  width: 240px;
+  background: hsla(var(--app-color-light-hsl), 0.7);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), inset 0 0 0 1px hsla(var(--app-color-light-contrast-hsl), 0.1);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px) scale(0.95);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 9999;
+
+  :global(body.dark) & {
+    background: hsla(var(--app-color-dark-hsl), 0.7);
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    color: var(--app-color-light-contrast);
+    font-size: 0.8rem;
+    text-align: left;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: default;
+    transition: background 0.1s;
+
+    &:hover {
+      background: var(--app-color-primary);
+      color: white;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: hsla(var(--app-color-light-contrast-hsl), 0.1);
+    margin: 4px 0;
+  }
+}

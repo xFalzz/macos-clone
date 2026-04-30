@@ -10,11 +10,11 @@ import css from './TrafficLights.module.scss';
 
 type TrafficLightProps = {
   appID: AppID;
-  onMaximizeClick: () => void;
+  onTileClick: (type: 'maximize' | 'left' | 'right') => void;
   class?: string | null;
 };
 
-export const TrafficLights = ({ appID, onMaximizeClick, class: className }: TrafficLightProps) => {
+export const TrafficLights = ({ appID, onTileClick, class: className }: TrafficLightProps) => {
   const [, setOpenApps] = useImmerAtom(openAppsStore);
   const [, setMinimizedApps] = useImmerAtom(minimizedAppsStore);
   const [activeApp] = useAtom(activeAppStore);
@@ -32,10 +32,8 @@ export const TrafficLights = ({ appID, onMaximizeClick, class: className }: Traf
     });
 
   const greenLightAction = () => {
-    if (appsConfig[appID].expandable) {
-      // Action not available right now!
-    } else {
-      onMaximizeClick();
+    if (!appsConfig[appID].expandable) {
+      onTileClick('maximize');
     }
   };
 
@@ -47,9 +45,19 @@ export const TrafficLights = ({ appID, onMaximizeClick, class: className }: Traf
       <button class={css.minimizeLight} onClick={minimizeApp}>
         <MinimizeIcon />
       </button>
-      <button class={css.stretchLight} onClick={greenLightAction}>
-        <GreenLightIcon {...appsConfig[appID]} />
-      </button>
+      <div class={css.stretchContainer}>
+        <button class={css.stretchLight} onClick={greenLightAction}>
+          <GreenLightIcon {...appsConfig[appID]} />
+        </button>
+        {!appsConfig[appID].expandable && (
+          <div class={css.tilingMenu}>
+            <button onClick={() => onTileClick('maximize')}>Enter Full Screen</button>
+            <div class={css.divider} />
+            <button onClick={() => onTileClick('left')}>Move Window to Left Side of Screen</button>
+            <button onClick={() => onTileClick('right')}>Move Window to Right Side of Screen</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
