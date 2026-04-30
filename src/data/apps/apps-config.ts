@@ -19,6 +19,7 @@ import { terminalAppConfig } from './terminal.app-config';
 import { viewSourceAppConfig } from './view-source.app-config';
 import { vscodeAppConfig } from './vscode.app-config';
 import { iphoneMirroringAppConfig } from './iphone-mirroring.app-config';
+import { passwordsAppConfig } from './passwords.app-config';
 
 export const appsConfig = {
   finder: finderAppConfig,
@@ -38,6 +39,7 @@ export const appsConfig = {
   contacts: contactsAppConfig,
   reminders: remindersAppConfig,
   'iphone-mirroring': iphoneMirroringAppConfig,
+  passwords: passwordsAppConfig,
 
   'about-this-mac': aboutThisMacAppConfig,
 

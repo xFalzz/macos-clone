@@ -24,6 +24,7 @@ const AboutThisMac = lazy(() => import('./AboutThisMac/AboutThisMac'));
 const Contacts = lazy(() => import('./Contacts/Contacts'));
 const Reminders = lazy(() => import('./Reminders/Reminders'));
 const IphoneMirroring = lazy(() => import('./IphoneMirroring/IphoneMirroring').then((m) => ({ default: m.IphoneMirroring })));
+const Passwords = lazy(() => import('./Passwords/Passwords').then((m) => ({ default: m.Passwords })));
 
 const PlaceholderApp = lazy(() => import('./Placeholder/Placeholder'));
 
@@ -46,6 +47,7 @@ export const AppNexus = ({ appID, isBeingDragged }: AppNexusProps) => {
   if (appID === 'contacts') return <Contacts />;
   if (appID === 'reminders') return <Reminders />;
   if (appID === 'iphone-mirroring') return <IphoneMirroring />;
+  if (appID === 'passwords') return <Passwords />;
 
   return <PlaceholderApp appID={appID} />;
 };

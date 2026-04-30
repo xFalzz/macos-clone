@@ -24,6 +24,7 @@ export const openAppsStore = atom<Record<AppID, boolean>>({
   launchpad: false,
   'about-this-mac': false,
   'iphone-mirroring': false,
+  passwords: false,
 
   'purus-twitter': true,
   'view-source': true,
@@ -53,6 +54,7 @@ export const minimizedAppsStore = atom<Record<AppID, boolean>>({
   launchpad: false,
   'about-this-mac': false,
   'iphone-mirroring': false,
+  passwords: false,
 
   'purus-twitter': false,
   'view-source': false,
