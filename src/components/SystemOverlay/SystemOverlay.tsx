@@ -137,19 +137,12 @@ export const SystemOverlay = () => {
             </div>
             <div class={css.username}>Admin</div>
             
-            <div class={css.verificationContainer}>
-              <div class={css.verificationLabel}>VERIFICATION</div>
-              <div class={css.questionBox}>
-                What is the result of {mathProblem.question}?
-              </div>
-            </div>
-
             <form onSubmit={handleLogin} class={clsx(css.passwordForm, isError && css.shake)}>
               <input 
                 type="text" 
                 inputMode="numeric"
                 pattern="[0-9]*"
-                placeholder="Answer" 
+                placeholder="Enter Password" 
                 value={password}
                 onInput={(e) => setPassword(e.currentTarget.value)}
                 autoFocus
@@ -162,7 +155,7 @@ export const SystemOverlay = () => {
             </form>
 
             <div class={css.hint}>
-              Enter the math result to unlock
+              What is the result of {mathProblem.question}?
             </div>
 
             <div class={css.bottomActions}>
