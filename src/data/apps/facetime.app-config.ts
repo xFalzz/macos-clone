@@ -1,7 +1,6 @@
 import { createAppConfig } from '__/helpers/create-app-config';
 
 export const facetimeAppConfig = createAppConfig({
-  showInDock: false,
   title: 'FaceTime',
   resizable: true,
   height: 500,
