@@ -7,6 +7,48 @@ import { activeAppStore, openAppsStore, AppID } from '__/stores/apps.store';
 import css from './Spotlight.module.scss';
 import { useFocusOutside } from '__/hooks';
 
+// ── Conversion helpers ─────────────────────────────────
+const currencyRates: Record<string, number> = {
+  USD: 1, IDR: 16200, EUR: 0.92, GBP: 0.79, JPY: 155.5, SGD: 1.35, MYR: 4.72, AUD: 1.53, CAD: 1.37, KRW: 1380,
+};
+
+const unitConversions: { pattern: RegExp; convert: (v: number) => { result: number; label: string } }[] = [
+  { pattern: /^([\d.]+)\s*km\s+to\s+miles?$/i, convert: (v) => ({ result: v * 0.621371, label: 'miles' }) },
+  { pattern: /^([\d.]+)\s*miles?\s+to\s+km$/i, convert: (v) => ({ result: v / 0.621371, label: 'km' }) },
+  { pattern: /^([\d.]+)\s*kg\s+to\s+lbs?$/i, convert: (v) => ({ result: v * 2.20462, label: 'lbs' }) },
+  { pattern: /^([\d.]+)\s*lbs?\s+to\s+kg$/i, convert: (v) => ({ result: v / 2.20462, label: 'kg' }) },
+  { pattern: /^([\d.]+)\s*(?:celsius|c)\s+to\s+(?:fahrenheit|f)$/i, convert: (v) => ({ result: v * 9 / 5 + 32, label: '°F' }) },
+  { pattern: /^([\d.]+)\s*(?:fahrenheit|f)\s+to\s+(?:celsius|c)$/i, convert: (v) => ({ result: (v - 32) * 5 / 9, label: '°C' }) },
+  { pattern: /^([\d.]+)\s*cm\s+to\s+inch(?:es)?$/i, convert: (v) => ({ result: v / 2.54, label: 'inches' }) },
+  { pattern: /^([\d.]+)\s*inch(?:es)?\s+to\s+cm$/i, convert: (v) => ({ result: v * 2.54, label: 'cm' }) },
+  { pattern: /^([\d.]+)\s*m\s+to\s+(?:ft|feet)$/i, convert: (v) => ({ result: v * 3.28084, label: 'ft' }) },
+  { pattern: /^([\d.]+)\s*(?:ft|feet)\s+to\s+m$/i, convert: (v) => ({ result: v / 3.28084, label: 'm' }) },
+];
+
+function tryCurrencyConversion(q: string): { result: string; from: string; to: string } | null {
+  const match = q.match(/^([\d,.]+)\s*([a-z]{3})\s+(?:to|in)\s+([a-z]{3})$/i);
+  if (!match) return null;
+  const value = parseFloat(match[1].replace(/,/g, ''));
+  const from = match[2].toUpperCase();
+  const to = match[3].toUpperCase();
+  if (!currencyRates[from] || !currencyRates[to]) return null;
+  const usd = value / currencyRates[from];
+  const converted = usd * currencyRates[to];
+  return { result: converted.toLocaleString('en-US', { maximumFractionDigits: 2 }), from, to };
+}
+
+function tryUnitConversion(q: string): { result: string; label: string } | null {
+  for (const uc of unitConversions) {
+    const match = q.match(uc.pattern);
+    if (match) {
+      const val = parseFloat(match[1]);
+      const res = uc.convert(val);
+      return { result: res.result.toLocaleString('en-US', { maximumFractionDigits: 4 }), label: res.label };
+    }
+  }
+  return null;
+}
+
 export const Spotlight = () => {
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
@@ -67,10 +109,10 @@ export const Spotlight = () => {
   };
   const fileResults = query.length >= 2 ? searchFiles(fileSystem, '').slice(0, 5) : [];
 
+  // Math evaluation
   let mathResult: string | number | null = null;
   if (query.match(/^[0-9+\-*/().%\s]+$/) && query.trim().length > 0) {
     try {
-      // Safe math evaluation: only allow numeric expressions
       const sanitized = query.replace(/[^0-9+\-*/().%\s]/g, '');
       if (sanitized.length > 0) {
         const fn = new Function(`"use strict"; return (${sanitized})`);
@@ -84,6 +126,12 @@ export const Spotlight = () => {
     }
   }
 
+  // Currency conversion
+  const currencyResult = tryCurrencyConversion(query);
+
+  // Unit conversion
+  const unitResult = tryUnitConversion(query);
+
   const handleOpen = (id: string) => {
     setOpenApps((prev: any) => ({ ...prev, [id]: true }));
     setActiveApp(id as AppID);
@@ -96,11 +144,19 @@ export const Spotlight = () => {
     setVisible(false);
   };
 
+  const handleWebSearch = () => {
+    setOpenApps((prev: any) => ({ ...prev, safari: true }));
+    setActiveApp('safari' as AppID);
+    setVisible(false);
+  };
+
   const handleInputKeyDown = (e: any) => {
     if (e.key === 'Enter') {
-      if (mathResult !== null) return;
+      if (mathResult !== null || currencyResult || unitResult) return;
       if (results[selectedIndex]) {
         handleOpen(results[selectedIndex].id);
+      } else {
+        handleWebSearch();
       }
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -110,6 +166,10 @@ export const Spotlight = () => {
       setSelectedIndex(s => Math.max(s - 1, 0));
     }
   };
+
+  const hasConversion = currencyResult || unitResult;
+  const hasSpecialResult = mathResult !== null || hasConversion;
+  const noResults = !hasSpecialResult && results.length === 0 && fileResults.length === 0;
 
   return (
     <div class={css.overlay}>
@@ -131,14 +191,42 @@ export const Spotlight = () => {
         
         {query && (
           <div class={css.results}>
+            {/* Math result */}
             {mathResult !== null && (
               <div class={css.resultItem}>
                 <span class={css.mathIcon}>=</span>
                 <div class={css.mathResult}>{mathResult}</div>
               </div>
             )}
+
+            {/* Currency conversion */}
+            {currencyResult && (
+              <>
+                <div class={css.sectionLabel}>Conversion</div>
+                <div class={css.resultItem}>
+                  <span class={css.mathIcon}>💱</span>
+                  <div class={css.mathResult}>
+                    {currencyResult.result} {currencyResult.to}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Unit conversion */}
+            {unitResult && !currencyResult && (
+              <>
+                <div class={css.sectionLabel}>Conversion</div>
+                <div class={css.resultItem}>
+                  <span class={css.mathIcon}>📐</span>
+                  <div class={css.mathResult}>
+                    {unitResult.result} {unitResult.label}
+                  </div>
+                </div>
+              </>
+            )}
             
-            {mathResult === null && results.length > 0 && (
+            {/* Application results */}
+            {!hasSpecialResult && results.length > 0 && (
               <>
                 <div class={css.sectionLabel}>Applications</div>
                 {results.map((app, idx) => (
@@ -157,7 +245,8 @@ export const Spotlight = () => {
               </>
             )}
 
-            {mathResult === null && fileResults.length > 0 && (
+            {/* File results */}
+            {!hasSpecialResult && fileResults.length > 0 && (
               <>
                 <div class={css.sectionLabel}>Files & Folders</div>
                 {fileResults.map((file) => (
@@ -171,9 +260,18 @@ export const Spotlight = () => {
                 ))}
               </>
             )}
-            
-            {mathResult === null && results.length === 0 && fileResults.length === 0 && (
-              <div class={css.noResults}>No Results</div>
+
+            {/* Web search fallback */}
+            {noResults && (
+              <>
+                <div class={css.resultItem} onClick={handleWebSearch} style={{ cursor: 'pointer' }}>
+                  <span style={{ fontSize: '1.2rem', marginRight: '0.5rem' }}>🌐</span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span>Search the Web</span>
+                    <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>Search for "{query}" in Safari</span>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
