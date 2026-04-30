@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai';
 import { useEffect } from 'preact/hooks';
 import { notificationsAtom, Notification } from '__/stores/notifications.store';
+import { playSound } from '__/helpers/sound-effects';
 import css from './NotificationCenter.module.scss';
 
 export const NotificationCenter = () => {
@@ -8,6 +9,7 @@ export const NotificationCenter = () => {
 
   useEffect(() => {
     if (notifications.length > 0) {
+      playSound('notification');
       const timer = setTimeout(() => {
         setNotifications((prev) => prev.slice(1));
       }, 4000);

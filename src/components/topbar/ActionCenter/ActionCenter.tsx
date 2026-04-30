@@ -12,6 +12,7 @@ import {
   volumeAtom,
   wifiAtom,
 } from '__/stores/action-center.store';
+import { playSound } from '__/helpers/sound-effects';
 import css from './ActionCenter.module.scss';
 import { ActionCenterShell } from './ActionCenterShell';
 import { ActionCenterSurface } from './ActionCenterSurface';
@@ -156,7 +157,10 @@ export const ActionCenter = () => {
                 min="0"
                 max="100"
                 value={volume}
-                onInput={(e) => setVolume(Number((e.target as HTMLInputElement).value))}
+                onInput={(e) => {
+                  setVolume(Number((e.target as HTMLInputElement).value));
+                  playSound('volumeChange');
+                }}
                 class={css.slider}
               />
               <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">

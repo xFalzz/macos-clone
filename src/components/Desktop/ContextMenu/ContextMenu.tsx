@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import { RovingTabIndexProvider, useFocusEffect, useRovingTabIndex } from 'react-roving-tabindex';
 import { contextMenuConfig } from '__/data/menu/context.menu.config';
 import { useContextMenu, useFocusOutside } from '__/hooks';
+import { playSound } from '__/helpers/sound-effects';
 import css from './ContextMenu.module.scss';
 
 type Props = {
@@ -32,6 +33,7 @@ export const ContextMenu = ({ outerRef }: Props) => {
 
   const handleAction = (key: string) => {
     setIsMenuVisible(false);
+    playSound('click');
     
     switch (key) {
       case 'new-folder':
@@ -65,11 +67,22 @@ export const ContextMenu = ({ outerRef }: Props) => {
         });
         setActiveApp('system-preferences');
         break;
+      case 'sort-by':
+        setFileSystem((prev: any) => {
+          const newFs = JSON.parse(JSON.stringify(prev));
+          const desktop = newFs.find((i: any) => i.name === 'Desktop');
+          if (desktop && desktop.children) {
+            desktop.children.sort((a: any, b: any) => a.name.localeCompare(b.name));
+          }
+          return newFs;
+        });
+        setNotifications(prev => [...prev, pushNotification('Finder', 'Desktop sorted by name', '📂')]);
+        break;
       case 'get-info':
-        alert('macOS Web Clone\nVersion 1.0\nCreated with React & Vite');
+        setNotifications(prev => [...prev, pushNotification('macOS Web Clone', 'Version 2.0 — Built with Preact, TypeScript & SCSS', '💻')]);
         break;
       default:
-        console.log('Action not implemented yet:', key);
+        setNotifications(prev => [...prev, pushNotification('System', `${key} action triggered`, '⚙️')]);
     }
   };
 
