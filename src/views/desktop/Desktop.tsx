@@ -11,6 +11,7 @@ import { Launchpad } from '__/components/apps/Launchpad/Launchpad';
 import { SystemOverlay } from '__/components/SystemOverlay/SystemOverlay';
 import { Spotlight } from '__/components/Spotlight/Spotlight';
 import { NotificationCenter } from '__/components/NotificationCenter/NotificationCenter';
+import { NotificationPanel } from '__/components/NotificationCenter/NotificationPanel';
 import { useTheme } from '__/hooks';
 import { wallpaperAtom, darkWallpaperAtom } from '__/stores/wallpaper.store';
 import css from './Desktop.module.scss';
@@ -87,6 +88,7 @@ export const Desktop = () => {
       <SystemOverlay />
       <Spotlight />
       <NotificationCenter />
+      <NotificationPanel />
       <WidgetEngine />
       <StartupChime />
 

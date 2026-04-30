@@ -7,9 +7,11 @@ import css from './Topbar.module.scss';
 import { TopBarIconButton } from './TopBarIconButton';
 import { TopBarTime } from './TopBarTime';
 import { widgetPanelVisibleAtom } from '__/components/Desktop/Widgets/WidgetEngine';
+import { notificationPanelVisibleAtom } from '__/stores/notification-panel.store';
 
 export const TopBar = () => {
   const [, setWidgetVisible] = useAtom(widgetPanelVisibleAtom);
+  const [, setNotifPanelVisible] = useAtom(notificationPanelVisibleAtom);
 
   return (
     <header id="top-bar" class={css.header}>
@@ -36,7 +38,7 @@ export const TopBar = () => {
 
       <ActionCenterToggle />
 
-      <button>
+      <button onClick={() => setNotifPanelVisible((v) => !v)}>
         <TopBarTime />
       </button>
     </header>
