@@ -1,0 +1,443 @@
+/* ── Widget Panel ────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99990;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-top: 2rem;
+  padding-right: 1rem;
+}
+
+.panel {
+  width: 340px;
+  max-height: calc(100vh - 4rem);
+  background: hsla(var(--app-color-light-hsl), 0.55);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px hsla(0, 0%, 0%, 0.25),
+    inset 0 0 0 0.5px hsla(var(--app-color-light-hsl), 0.4);
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: slideIn 0.3s ease forwards;
+  color: var(--app-color-light-contrast);
+
+  :global(body.dark) & {
+    background: hsla(var(--app-color-light-hsl), 0.25);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.5rem;
+}
+
+.panelTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.panelClose {
+  background: transparent;
+  border: none;
+  color: var(--app-color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-family: inherit;
+
+  &:hover {
+    background: hsla(var(--app-color-dark-hsl), 0.06);
+  }
+}
+
+.panelGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 1rem;
+}
+
+/* ── Widget Card ─────────────────────────────────────── */
+.widget {
+  background: hsla(var(--app-color-light-hsl), 0.5);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px hsla(0, 0%, 0%, 0.08),
+    inset 0 0 0 0.5px hsla(var(--app-color-light-hsl), 0.3);
+
+  :global(body.dark) & {
+    background: hsla(var(--app-color-light-hsl), 0.12);
+  }
+}
+
+.widgetHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem 0.25rem;
+}
+
+.widgetIcon {
+  font-size: 0.9rem;
+}
+
+.widgetTitle {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  opacity: 0.5;
+}
+
+/* ── Clock ───────────────────────────────────────────── */
+.clockBody {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem 0.75rem;
+}
+
+.analogClock {
+  flex-shrink: 0;
+}
+
+.clockFace {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: hsla(var(--app-color-light-hsl), 0.6);
+  box-shadow: inset 0 0 0 1.5px hsla(var(--app-color-dark-hsl), 0.15);
+  position: relative;
+
+  :global(body.dark) & {
+    background: hsla(var(--app-color-dark-hsl), 0.2);
+  }
+}
+
+.clockMark {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 1.5px;
+  height: 5px;
+  margin-left: -0.75px;
+  background: hsla(var(--app-color-dark-hsl), 0.25);
+  transform-origin: 50% 29px;
+
+  &:nth-child(3n+1) {
+    height: 7px;
+    width: 2px;
+    margin-left: -1px;
+    background: hsla(var(--app-color-dark-hsl), 0.4);
+  }
+}
+
+.clockHand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: 50% 100%;
+  border-radius: 2px;
+}
+
+.hourHand {
+  width: 2.5px;
+  height: 18px;
+  margin-left: -1.25px;
+  background: var(--app-color-light-contrast);
+}
+
+.minuteHand {
+  width: 2px;
+  height: 24px;
+  margin-left: -1px;
+  background: var(--app-color-light-contrast);
+}
+
+.secondHand {
+  width: 1px;
+  height: 26px;
+  margin-left: -0.5px;
+  background: #ff3b30;
+  transition: none;
+}
+
+.clockCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: #ff3b30;
+}
+
+.clockDigital {
+  display: flex;
+  flex-direction: column;
+}
+
+.clockTime {
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.clockCity {
+  font-size: 0.72rem;
+  opacity: 0.5;
+  margin-top: 0.2rem;
+}
+
+/* ── Calendar ────────────────────────────────────────── */
+.calendarBody {
+  padding: 0.25rem 0.75rem 0.75rem;
+}
+
+.calendarToday {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsla(var(--app-color-dark-hsl), 0.08);
+  margin-bottom: 0.5rem;
+}
+
+.calendarDayName {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--system-red);
+  text-transform: uppercase;
+}
+
+.calendarDateBig {
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.calendarMonth {
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.calendarGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.calendarWeekHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.calendarWeekDay {
+  font-size: 0.6rem;
+  font-weight: 600;
+  opacity: 0.4;
+  padding: 0.15rem 0;
+}
+
+.calendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.calendarDay {
+  font-size: 0.7rem;
+  padding: 0.2rem;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.calendarToHighlight {
+  background: var(--app-color-primary);
+  color: white;
+  font-weight: 700;
+}
+
+.calendarEmpty {
+  visibility: hidden;
+}
+
+/* ── Weather ─────────────────────────────────────────── */
+.weatherBody {
+  padding: 0.25rem 0.75rem 0.75rem;
+}
+
+.weatherMain {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsla(var(--app-color-dark-hsl), 0.08);
+  margin-bottom: 0.5rem;
+}
+
+.weatherCondition {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.weatherInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.weatherTemp {
+  font-size: 2.2rem;
+  font-weight: 200;
+  line-height: 1;
+}
+
+.weatherCity {
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.weatherHL {
+  font-size: 0.65rem;
+  opacity: 0.5;
+}
+
+.weatherCities {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.weatherCityBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.75rem;
+  text-align: left;
+
+  &:hover {
+    background: hsla(var(--app-color-dark-hsl), 0.06);
+  }
+}
+
+.weatherCityActive {
+  background: hsla(var(--app-color-primary-hsl), 0.12) !important;
+}
+
+.weatherCityName {
+  flex: 1;
+}
+
+.weatherCityTemp {
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+/* ── Battery ─────────────────────────────────────────── */
+.batteryBody {
+  padding: 0.5rem 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.batteryVisual {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.batteryShell {
+  flex: 1;
+  height: 22px;
+  border-radius: 5px;
+  border: 2px solid hsla(var(--app-color-dark-hsl), 0.25);
+  padding: 2px;
+  overflow: hidden;
+}
+
+.batteryFill {
+  height: 100%;
+  border-radius: 2.5px;
+  transition: width 0.5s ease;
+}
+
+.batteryTip {
+  width: 4px;
+  height: 10px;
+  background: hsla(var(--app-color-dark-hsl), 0.25);
+  border-radius: 0 2px 2px 0;
+}
+
+.batteryInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.batteryPct {
+  font-size: 1.8rem;
+  font-weight: 300;
+}
+
+.batteryStatus {
+  font-size: 0.72rem;
+  opacity: 0.5;
+}
+
+.batteryMeta {
+  display: flex;
+  gap: 1rem;
+}
+
+.batteryMetaItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.batteryMetaLabel {
+  font-size: 0.6rem;
+  opacity: 0.4;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.batteryMetaValue {
+  font-size: 0.75rem;
+}
