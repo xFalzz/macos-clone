@@ -23,6 +23,7 @@ const Music = lazy(() => import('./Music/Music'));
 const AboutThisMac = lazy(() => import('./AboutThisMac/AboutThisMac'));
 const Contacts = lazy(() => import('./Contacts/Contacts'));
 const Reminders = lazy(() => import('./Reminders/Reminders'));
+const IphoneMirroring = lazy(() => import('./IphoneMirroring/IphoneMirroring').then((m) => ({ default: m.IphoneMirroring })));
 
 const PlaceholderApp = lazy(() => import('./Placeholder/Placeholder'));
 
@@ -44,6 +45,7 @@ export const AppNexus = ({ appID, isBeingDragged }: AppNexusProps) => {
   if (appID === 'about-this-mac') return <AboutThisMac />;
   if (appID === 'contacts') return <Contacts />;
   if (appID === 'reminders') return <Reminders />;
+  if (appID === 'iphone-mirroring') return <IphoneMirroring />;
 
   return <PlaceholderApp appID={appID} />;
 };
