@@ -9,3 +9,8 @@ export const darkWallpaperAtom = atomWithStorage<string>(
   'wallpaper:dark-path',
   '/assets/wallpapers/37-1.jpg',
 );
+
+export const dynamicWallpaperEnabledAtom = atomWithStorage<boolean>(
+  'wallpaper:dynamic-enabled',
+  false,
+);

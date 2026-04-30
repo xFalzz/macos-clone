@@ -13,7 +13,7 @@ import { Spotlight } from '__/components/Spotlight/Spotlight';
 import { NotificationCenter } from '__/components/NotificationCenter/NotificationCenter';
 import { NotificationPanel } from '__/components/NotificationCenter/NotificationPanel';
 import { useTheme } from '__/hooks';
-import { wallpaperAtom, darkWallpaperAtom } from '__/stores/wallpaper.store';
+import { wallpaperAtom, darkWallpaperAtom, dynamicWallpaperEnabledAtom } from '__/stores/wallpaper.store';
 import css from './Desktop.module.scss';
 
 import { fileSystemStore } from '__/data/file-system';
@@ -23,10 +23,32 @@ export const Desktop = () => {
   const [theme] = useTheme();
   const [wallpaper] = useAtom(wallpaperAtom);
   const [darkWallpaper] = useAtom(darkWallpaperAtom);
+  const [dynamicWallpaper] = useAtom(dynamicWallpaperEnabledAtom);
   const [fileSystem, setFileSystem] = useAtom(fileSystemStore);
   const [isDragging, setIsDragging] = useState(false);
+  const [timeWallpaper, setTimeWallpaper] = useState('');
 
-  const activeWallpaper = theme === 'dark' ? darkWallpaper : wallpaper;
+  useEffect(() => {
+    if (!dynamicWallpaper) return;
+    
+    const updateTimeWallpaper = () => {
+      const hour = new Date().getHours();
+      let wp = '37-2.jpg'; // Day
+      if (hour >= 18 || hour < 6) wp = '37-1.jpg'; // Night
+      if (hour >= 6 && hour < 9) wp = '37-3.jpg'; // Morning
+      if (hour >= 16 && hour < 18) wp = '37-4.jpg'; // Evening
+      
+      setTimeWallpaper(`/assets/wallpapers/${wp}`);
+    };
+    
+    updateTimeWallpaper();
+    const interval = setInterval(updateTimeWallpaper, 60000);
+    return () => clearInterval(interval);
+  }, [dynamicWallpaper]);
+
+  const activeWallpaper = dynamicWallpaper && timeWallpaper 
+    ? timeWallpaper 
+    : (theme === 'dark' ? darkWallpaper : wallpaper);
 
   useEffect(() => {
     preloadImage(wallpaper);

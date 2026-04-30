@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useAtom } from 'jotai';
 import { useState } from 'preact/hooks';
 import { useTheme } from '__/hooks';
-import { wallpaperAtom, darkWallpaperAtom } from '__/stores/wallpaper.store';
+import { wallpaperAtom, darkWallpaperAtom, dynamicWallpaperEnabledAtom } from '__/stores/wallpaper.store';
 import css from './SystemPreferences.module.scss';
 
 const wallpaperList = [
@@ -38,6 +38,7 @@ const SystemPreferences = () => {
   const [theme, setTheme] = useTheme();
   const [wallpaper, setWallpaper] = useAtom(wallpaperAtom);
   const [darkWallpaper, setDarkWallpaper] = useAtom(darkWallpaperAtom);
+  const [dynamicWallpaper, setDynamicWallpaper] = useAtom(dynamicWallpaperEnabledAtom);
 
   const goHome = () => setPanel('main');
 
@@ -156,8 +157,19 @@ const SystemPreferences = () => {
       {panel === 'desktop' && (
         <div class={css.panelContent}>
           <div class={css.section}>
-            <h3 class={css.sectionTitle}>Desktop Picture</h3>
-            <div class={css.wallpaperGrid}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 class={css.sectionTitle} style={{ marginBottom: 0 }}>Desktop Picture</h3>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
+                <input 
+                  type="checkbox" 
+                  checked={dynamicWallpaper} 
+                  onChange={(e) => setDynamicWallpaper((e.target as HTMLInputElement).checked)} 
+                />
+                Dynamic Wallpaper (Time-based)
+              </label>
+            </div>
+            
+            <div class={css.wallpaperGrid} style={{ marginTop: '1rem', opacity: dynamicWallpaper ? 0.5 : 1, pointerEvents: dynamicWallpaper ? 'none' : 'auto' }}>
               {wallpaperList.map((wp) => {
                 const path = `/assets/wallpapers/${wp}`;
                 const isActive = theme === 'dark' ? darkWallpaper === path : wallpaper === path;
