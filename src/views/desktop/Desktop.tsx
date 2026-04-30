@@ -12,6 +12,8 @@ import { SystemOverlay } from '__/components/SystemOverlay/SystemOverlay';
 import { Spotlight } from '__/components/Spotlight/Spotlight';
 import { NotificationCenter } from '__/components/NotificationCenter/NotificationCenter';
 import { NotificationPanel } from '__/components/NotificationCenter/NotificationPanel';
+import { SiriGlow } from '__/components/SiriGlow/SiriGlow';
+import { QuickLook } from '__/components/QuickLook/QuickLook';
 import { useTheme } from '__/hooks';
 import { wallpaperAtom, darkWallpaperAtom, dynamicWallpaperEnabledAtom } from '__/stores/wallpaper.store';
 import css from './Desktop.module.scss';
@@ -109,9 +111,10 @@ export const Desktop = () => {
       <Launchpad />
       <SystemOverlay />
       <Spotlight />
-      <NotificationCenter />
       <NotificationPanel />
       <WidgetEngine />
+      <SiriGlow />
+      <QuickLook />
       <StartupChime />
 
       <div

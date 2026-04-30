@@ -14,6 +14,7 @@ export const SystemOverlay = () => {
   const [isError, setIsError] = useState(false);
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
+  const [mathProblem, setMathProblem] = useState({ question: '', answer: 0 });
 
   const [, setOpenApps] = useAtom(openAppsStore);
   const [, setActiveApp] = useAtom(activeAppStore);
@@ -40,9 +41,25 @@ export const SystemOverlay = () => {
     return () => document.removeEventListener('system-action', handleSystemAction as EventListener);
   }, [setSystemState, setOpenApps, setActiveApp]);
 
+  const generateMathProblem = () => {
+    const isAddition = Math.random() > 0.5;
+    const a = Math.floor(Math.random() * 20) + 1;
+    const b = Math.floor(Math.random() * 20) + 1;
+    
+    if (isAddition) {
+      setMathProblem({ question: `${a} + ${b}`, answer: a + b });
+    } else {
+      // Ensure positive result for subtraction
+      const max = Math.max(a, b);
+      const min = Math.min(a, b);
+      setMathProblem({ question: `${max} - ${min}`, answer: max - min });
+    }
+  };
+
   useEffect(() => {
     if (systemState === 'lock') {
       setShowLogin(true);
+      generateMathProblem();
     } else {
       setShowLogin(false);
       setPassword('');
@@ -80,16 +97,15 @@ export const SystemOverlay = () => {
 
   const handleLogin = (e: any) => {
     e?.preventDefault();
-    const now = new Date();
-    const expectedPassword = `${now.getFullYear() + (now.getMonth() + 1) + now.getDate()}`;
     
-    if (password === expectedPassword || password === 'admin') {
+    if (parseInt(password) === mathProblem.answer || password === 'admin') {
       setSystemState('awake');
       setPassword('');
       setIsError(false);
     } else {
       setIsError(true);
       setPassword('');
+      generateMathProblem(); // New problem on error
       setTimeout(() => setIsError(false), 500);
     }
   };
@@ -121,10 +137,19 @@ export const SystemOverlay = () => {
             </div>
             <div class={css.username}>Admin</div>
             
+            <div class={css.verificationContainer}>
+              <div class={css.verificationLabel}>VERIFICATION</div>
+              <div class={css.questionBox}>
+                What is the result of {mathProblem.question}?
+              </div>
+            </div>
+
             <form onSubmit={handleLogin} class={clsx(css.passwordForm, isError && css.shake)}>
               <input 
-                type="password" 
-                placeholder="Enter Password" 
+                type="text" 
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Answer" 
                 value={password}
                 onInput={(e) => setPassword(e.currentTarget.value)}
                 autoFocus
@@ -137,7 +162,7 @@ export const SystemOverlay = () => {
             </form>
 
             <div class={css.hint}>
-              Hint: Password is YYYY + MM + DD
+              Enter the math result to unlock
             </div>
 
             <div class={css.bottomActions}>

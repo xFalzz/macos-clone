@@ -49,8 +49,10 @@ function tryUnitConversion(q: string): { result: string; label: string } | null 
   return null;
 }
 
+import { spotlightVisibleAtom } from '__/stores/spotlight.store';
+
 export const Spotlight = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useAtom(spotlightVisibleAtom);
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   

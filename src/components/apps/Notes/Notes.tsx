@@ -33,7 +33,29 @@ const Notes = () => {
   };
 
   const updateContent = (content: string) => {
-    setNotes(notes.map((n) => (n.id === selectedId ? { ...n, content, title: content.split('\n')[0].slice(0, 40) || 'New Note' } : n)));
+    // Math Notes: detect "expression =" at the end of a line
+    let newContent = content;
+    const lines = content.split('\n');
+    const lastLine = lines[lines.length - 1];
+    
+    // Pattern: something like "1 + 2 =" or "50 * 2 ="
+    const mathMatch = lastLine.match(/^(.+?)\s*=\s*$/);
+    if (mathMatch) {
+      const expression = mathMatch[1].trim();
+      // Only evaluate if it looks like math (numbers and operators)
+      if (expression.match(/^[0-9+\-*/().%\s^]+$/)) {
+        try {
+          // Replace ^ with ** for power
+          const sanitized = expression.replace(/\^/g, '**');
+          const result = new Function(`"use strict"; return (${sanitized})`)();
+          if (typeof result === 'number' && isFinite(result)) {
+            newContent = content + ' ' + result;
+          }
+        } catch (e) {}
+      }
+    }
+
+    setNotes(notes.map((n) => (n.id === selectedId ? { ...n, content: newContent, title: newContent.split('\n')[0].slice(0, 40) || 'New Note' } : n)));
   };
 
   const deleteNote = () => {

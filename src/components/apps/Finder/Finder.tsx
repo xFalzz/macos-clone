@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { useAtom } from 'jotai';
 import { useState } from 'preact/hooks';
 import { fileSystemStore, FileSystemItem, getFileIcon } from '__/data/file-system';
+import { selectedFileAtom } from '__/stores/selection.store';
 import css from './Finder.module.scss';
 
 const sidebarItems = [
@@ -18,6 +19,7 @@ const sidebarItems = [
 
 const Finder = () => {
   const [fileSystem, setFileSystem] = useAtom(fileSystemStore);
+  const [, setSelectedFile] = useAtom(selectedFileAtom);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
@@ -75,6 +77,7 @@ const Finder = () => {
       lastClickRef.name = '';
     } else {
       setSelectedItem(item.name);
+      setSelectedFile(item);
       lastClickRef.time = now;
       lastClickRef.name = item.name;
     }
