@@ -1,14 +1,20 @@
-# macOS Web - Preact Edition
+# macOS Sequoia Web Clone - Preact Edition
 
-A beautiful, interactive macOS desktop experience built with modern web technologies. This project recreates the macOS interface using Preact, TypeScript, and SCSS.
+A beautiful, interactive macOS Sequoia desktop experience built with modern web technologies. This project recreates the latest macOS interface using Preact, TypeScript, and SCSS, featuring dynamic system behaviors and Apple Intelligence aesthetics.
 
 ## ✨ Features
 
+### 🌟 Sequoia Exclusive Features
+- **Dynamic Lock Screen**: Authentic Sequoia lock screen with a dynamic Math Password verification system on startup and sleep.
+- **Apple Intelligence (Siri Glow)**: Stunning rainbow edge-glow animations when activating Spotlight search.
+- **Math Notes**: Integrated auto-calculating math engine inside the Notes app (type `expression =` to calculate).
+- **Quick Look**: Native file preview overlay in Finder by pressing the `Spacebar`.
+
 ### 🖥️ Desktop Experience
-- **Authentic macOS UI**: Faithful recreation of macOS Monterey's desktop interface
+- **Authentic macOS UI**: Faithful recreation of macOS Sequoia's desktop interface
+- **Window Snapping & Tiling**: Advanced window management with Sequoia-style edge snapping and tiling menus
 - **Interactive Dock**: Animated dock with hover effects and app indicators
-- **Window Management**: Draggable, resizable windows with traffic light controls
-- **Menu Bar**: Functional menu bar with Apple menu and app-specific menus
+- **Menu Bar**: Functional menu bar with Apple menu, sleep controls, and app-specific menus
 - **Action Center**: Quick access to system controls (Wi-Fi, Bluetooth, AirDrop, theme switching)
 
 ### 📱 Available Apps
@@ -28,7 +34,8 @@ A beautiful, interactive macOS desktop experience built with modern web technolo
 ### 🎨 Design Features
 - **Light/Dark Theme**: Toggle between light and dark modes
 - **Responsive Design**: Works on various screen sizes
-- **Smooth Animations**: Framer Motion powered animations
+- **Glassmorphism**: Beautiful blurred backgrounds and authentic translucent panels
+- **Smooth Animations**: Framer Motion powered animations for seamless transitions
 - **High-Quality Assets**: Authentic macOS icons and wallpapers
 - **Startup Chime**: Classic Mac startup sound
 
@@ -76,12 +83,12 @@ npm run type-check # TypeScript type checking
 
 ## 🎯 Key Features
 
-### Window Management
-- Drag and drop windows
-- Resize windows with handles
+### Window Management & Tiling
+- Advanced Sequoia-style window snapping to screen edges
+- Hover over the maximize button for intelligent tiling options
+- Drag and drop windows seamlessly
 - Traffic light controls (close, minimize, maximize)
-- Window focus management
-- Z-index layering
+- Window focus management & Z-index layering
 
 ### Dock Functionality
 - Hover animations
@@ -137,16 +144,18 @@ We welcome contributions! Here's how you can help:
 ## 🐛 Known Issues
 
 - Some apps are currently placeholders
-- Window maximize functionality is limited
-- Some animations may need optimization
+- Some system preferences are view-only
 
 ## 📝 Roadmap
 
-- [ ] Add more functional apps
-- [ ] Implement file system simulation
-- [ ] Add notifications system
-- [ ] Improve accessibility
-- [ ] Add more customization options
+- [x] Implement macOS Sequoia Siri Glow effect
+- [x] Add Math Notes integration
+- [x] Create authentic Lock Screen with verification
+- [x] Add Spacebar Quick Look feature
+- [x] Fix Window Snapping and Tiling menus
+- [ ] Add more functional apps (Terminal, Safari web view)
+- [ ] Enhance file system simulation
+- [ ] Add push notifications system
 - [ ] Mobile responsiveness improvements
 
 ## 📄 License
